@@ -27,10 +27,9 @@ jobs:
           node-version: 20
       - run: npm ci || npm install
       - name: Build
-        env:
-          VITE_ESCROW_ADDRESS: ${{ vars.VITE_ESCROW_ADDRESS }}
-          VITE_DEPLOY_BLOCK: ${{ vars.VITE_DEPLOY_BLOCK }}
-          VITE_WALLETCONNECT_PROJECT_ID: ${{ vars.VITE_WALLETCONNECT_PROJECT_ID }}
+        # Public values (escrow address, deploy block) are committed in frontend/.env.production,
+        # so the build does not depend on repository variables. Passing empty `vars.*` here would
+        # override the .env file with empty strings — hence no env block.
         run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
