@@ -14,7 +14,8 @@
     "demo:local": "hardhat run scripts/demo.js --network localhost",
     "abi": "node scripts/export-abi.js",
     "finalize": "node scripts/finalize.js",
-    "check:musd": "node scripts/check-musd.js"
+    "check:musd": "node scripts/check-musd.js",
+    "postdeploy": "powershell -ExecutionPolicy Bypass -File scripts/postdeploy.ps1"
   },
   "keywords": [
     "mezo",
