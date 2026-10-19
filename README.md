@@ -62,7 +62,7 @@ milestone:  Pending ──submit──▶ Submitted ──approve─────
 | Network | Contract | Address |
 |---|---|---|
 | Local (verification run) | `MezoGigEscrow` | `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512` + `MockMUSD` — see [`docs/DEMO.md`](docs/DEMO.md) |
-| **Mezo Testnet (31611)** | `MezoGigEscrow` | **`<filled by `npm run deploy:mezo` → deployments/mezoTestnet.json`>** |
+| **Mezo Testnet (31611)** | `MezoGigEscrow` | **`0x247b313d0eD3C532B16c7E5f9eA760272361600F** |
 | Mezo Testnet | MUSD (ERC-20, 18 dec, permit) | [`0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503`](https://explorer.test.mezo.org/address/0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503) |
 
 Live demo (GitHub Pages): **`<published URL>`** — the workflow in `.github/workflows/pages.yml` builds and
@@ -136,7 +136,7 @@ npm install && npm run build
 Verify on the explorer (Blockscout-compatible endpoint):
 
 ```bash
-npx hardhat verify --network mezoTestnet <ESCROW_ADDRESS> 0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503 148
+npx hardhat verify --network mezoTestnet 0x247b313d0eD3C532B16c7E5f9eA760272361600F 0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503 148
 ```
 
 ## Security

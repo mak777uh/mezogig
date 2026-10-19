@@ -39,5 +39,8 @@ module.exports = {
     ],
   },
   gasReporter: { enabled: process.env.REPORT_GAS === "true" },
+  // The Mezo testnet explorer (Blockscout) does not expose the Etherscan-compatible
+  // API, but the chain is supported by Sourcify — so verification goes through Sourcify.
+  sourcify: { enabled: true },
   mocha: { timeout: 120000 },
 };

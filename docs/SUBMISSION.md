@@ -12,9 +12,9 @@
 | Main artifact | `mezogig-release.zip` (source + docs, no `node_modules`/`.env`/build output) |
 | Repository | local git, 4 commits, MIT — public GitHub pending owner access |
 | Contract | `contracts/MezoGigEscrow.sol` (solc 0.8.28, optimizer 200, `evmVersion london`) |
-| Contract address | **`<ESCROW_ADDRESS>`** |
-| Explorer | `https://explorer.test.mezo.org/address/<ESCROW_ADDRESS>` |
-| Verification | **`<verified / pending>`** — see §4 |
+| Contract address | **`0x247b313d0eD3C532B16c7E5f9eA760272361600F`** |
+| Explorer | `https://explorer.test.mezo.org/address/0x247b313d0eD3C532B16c7E5f9eA760272361600F` |
+| Verification | **`verified (Sourcify exact_match; see §4)`** — see §4 |
 | MUSD token | [`0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503`](https://explorer.test.mezo.org/address/0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503) (18 dec, EIP-2612) |
 | Review period | **148 s** (short on purpose: the auto-claim path must be testable in minutes) |
 | Live demo | `<frontend URL>` (GitHub Pages workflow included; Vercel alternative documented) |
@@ -35,18 +35,18 @@ upgradeability, and no way to withdraw funds outside these paths.
 
 | Step | Hash |
 |---|---|
-| `MezoGigEscrow` deployment | **`<DEPLOY_TX>`** |
-| Verification | **`<VERIFY_TX_OR_LINK>`** |
+| `MezoGigEscrow` deployment | **`0xc9ea76977cd4840160378e2ce3d52269a22dc090f5b3daeed0ec68a562ad7e44`** |
+| Verification | **`Sourcify **exact_match** (creation + runtime) — https://repo.sourcify.dev/contracts/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F`** |
 
 ### 3.2 Contract state after deployment (read calls, no gas needed)
 
 ```bash
 # review period (expected 148)
-cast call <ESCROW_ADDRESS> "reviewPeriod()(uint256)" --rpc-url https://rpc.test.mezo.org
+cast call 0x247b313d0eD3C532B16c7E5f9eA760272361600F "reviewPeriod()(uint256)" --rpc-url https://rpc.test.mezo.org
 # MUSD token (expected 0x1189…c503)
-cast call <ESCROW_ADDRESS> "musd()(address)" --rpc-url https://rpc.test.mezo.org
+cast call 0x247b313d0eD3C532B16c7E5f9eA760272361600F "musd()(address)" --rpc-url https://rpc.test.mezo.org
 # gigs created so far (expected 0)
-cast call <ESCROW_ADDRESS> "gigCount()(uint256)" --rpc-url https://rpc.test.mezo.org
+cast call 0x247b313d0eD3C532B16c7E5f9eA760272361600F "gigCount()(uint256)" --rpc-url https://rpc.test.mezo.org
 ```
 
 ### 3.3 Full lifecycle run — local Hardhat chain (honest label)
@@ -76,7 +76,7 @@ After the run the escrow held **0 MUSD**: every unit of the deposit was settled 
 ```bash
 ./scripts/verify-args.sh
 # equivalently:
-npx hardhat verify --network mezoTestnet <ESCROW_ADDRESS> 0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503 148
+npx hardhat verify --network mezoTestnet 0x247b313d0eD3C532B16c7E5f9eA760272361600F 0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503 148
 ```
 
 Manual explorer form:

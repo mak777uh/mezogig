@@ -26,8 +26,12 @@ for (const rel of files) {
   text = text
     .replaceAll("<ESCROW_ADDRESS>", d.escrow)
     .replaceAll("<DEPLOY_TX>", d.txHash || "")
+    .replaceAll(
+      "<VERIFY_TX_OR_LINK>",
+      `Sourcify **exact_match** (creation + runtime) — https://repo.sourcify.dev/contracts/31611/${d.escrow}`
+    )
     .replace(/<filled by `npm run deploy:mezo`[\s\S]*?>/g, d.escrow)
-    .replaceAll("<verified / pending>", "verified");
+    .replaceAll("<verified / pending>", "verified (Sourcify exact_match; see §4)");
   if (text !== before) {
     fs.writeFileSync(p, text);
     touched++;

@@ -15,7 +15,8 @@
     "abi": "node scripts/export-abi.js",
     "finalize": "node scripts/finalize.js",
     "check:musd": "node scripts/check-musd.js",
-    "postdeploy": "powershell -ExecutionPolicy Bypass -File scripts/postdeploy.ps1"
+    "postdeploy": "powershell -ExecutionPolicy Bypass -File scripts/postdeploy.ps1",
+    "verify:sourcify": "node scripts/verify-sourcify.js"
   },
   "keywords": [
     "mezo",
