@@ -14,6 +14,8 @@
 | Local end-to-end | full lifecycle executed on a local chain, tx list — [`docs/DEMO.md`](docs/DEMO.md) |
 | Testnet deploy | **deployed** on Mezo Testnet — `0x247b313d0eD3C532B16c7E5f9eA760272361600F`, block `16247351`, tx `0xc9ea7697…ad7e44` |
 | Verification | **Sourcify `exact_match`** (creation + runtime) — [repo record](https://repo.sourcify.dev/contracts/full_match/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F/) |
+| Repository | **public** — <https://github.com/mak777uh/mezogig> (MIT) |
+| Live demo | **<https://mak777uh.github.io/mezogig/>** — GitHub Pages, Mezo Testnet wired in |
 
 ## The problem
 
@@ -66,8 +68,9 @@ milestone:  Pending ──submit──▶ Submitted ──approve─────
 | **Mezo Testnet (31611)** | `MezoGigEscrow` | [`0x247b313d0eD3C532B16c7E5f9eA760272361600F`](https://explorer.test.mezo.org/address/0x247b313d0eD3C532B16c7E5f9eA760272361600F) — deploy tx [`0xc9ea7697…`](https://explorer.test.mezo.org/tx/0xc9ea76977cd4840160378e2ce3d52269a22dc090f5b3daeed0ec68a562ad7e44), verified on [Sourcify](https://repo.sourcify.dev/contracts/full_match/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F/) |
 | Mezo Testnet | MUSD (ERC-20, 18 dec, permit) | [`0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503`](https://explorer.test.mezo.org/address/0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503) |
 
-Live demo: build is ready in `frontend/dist` (built with the real escrow address); hosting is pending
-(GitHub Pages workflow in `.github/workflows/pages.yml`, Vercel alternative documented below).
+Live demo: **<https://mak777uh.github.io/mezogig/>** · public repository: **<https://github.com/mak777uh/mezogig>**.
+The build is reproducible locally: `cd frontend && npm ci && npm run dev` (public values are committed in
+`frontend/.env.production`; no secrets).
 
 ## Screenshots
 

@@ -10,14 +10,14 @@
 | Project | **MezoGig** — milestone escrow for freelance gigs, settled in MUSD |
 | Network | Mezo Testnet, chainId **31611** (testnet only, no real money) |
 | Main artifact | `mezogig-release.zip` (source + docs, no `node_modules`/`.env`/build output) |
-| Repository | local git, 6 commits, MIT — public GitHub pending owner access |
+| Repository | **public** — <https://github.com/mak777uh/mezogig> (MIT, branch `main`) |
 | Contract | `contracts/MezoGigEscrow.sol` (solc 0.8.28, optimizer 200, `evmVersion london`) |
 | Contract address | **`0x247b313d0eD3C532B16c7E5f9eA760272361600F`** |
 | Explorer | `https://explorer.test.mezo.org/address/0x247b313d0eD3C532B16c7E5f9eA760272361600F` |
 | Verification | **Sourcify `exact_match`** (creation + runtime, matchId `56559336`) — [public record](https://repo.sourcify.dev/contracts/full_match/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F/) |
 | MUSD token | [`0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503`](https://explorer.test.mezo.org/address/0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503) (18 dec, EIP-2612) |
 | Review period | **148 s** (short on purpose: the auto-claim path must be testable in minutes) |
-| Live demo | build ready in `frontend/dist` with the real escrow address; hosting pending (GitHub Pages workflow included, Vercel alternative documented) |
+| Live demo | **<https://mak777uh.github.io/mezogig/>** (GitHub Pages; Mezo Testnet wired in) |
 
 ## 2. What it does (one paragraph)
 
@@ -195,8 +195,8 @@ cat deployments/mezoTestnet.json
 | Frontend: create / my gigs / gig card with role buttons / invite link | `frontend/src/App.tsx`; build passes (`npm run build`) |
 | MUSD balance + “how to get test MUSD” | UI header balance + faucet/MUSD links in footer and “How to test in 5 min” tab |
 | Demo mode with short review period | deployment `REVIEW_PERIOD_SECONDS=148`; UI counts down to claimable |
-| Frontend deployed for free | GitHub Pages workflow `.github/workflows/pages.yml` (pending repo access); Vercel instructions in README |
-| Public repo, MIT, README with problem/solution/state machine/addresses/5-min test/tests/Security | README.md + LICENSE + docs/ |
+| Frontend deployed for free | **live**: <https://mak777uh.github.io/mezogig/> (GitHub Pages workflow `.github/workflows/pages.yml`; public values in `frontend/.env.production`) |
+| Public repo, MIT, README with problem/solution/state machine/addresses/5-min test/tests/Security | **live**: <https://github.com/mak777uh/mezogig> + README.md + LICENSE + docs/ |
 | Contract verified on explorer | Sourcify **exact_match** on chain 31611 (the Mezo explorer has no Etherscan API — see §4) |
 | A couple of real test orders on-chain | **Gap:** MUSD borrow skipped → no public-testnet orders; local + fork runs provided instead (see §3.3) |
 | No private keys in the repo | `.env` gitignored, only `.env.example` committed; keys live in `env\secrets\` outside the repo; checked with `git status --ignored` |
@@ -207,9 +207,9 @@ cat deployments/mezoTestnet.json
 1. **No public-testnet lifecycle transactions.** The deploy is real; the orders are local/fork because MUSD
    on the testnet requires a collateralised borrow (min. 2000 MUSD debt). This is stated openly rather than
    dressed up.
-2. **Public GitHub repository pending** — no token/account available in this environment; the zip is the
-   primary artifact, the local git history is intact, and the Pages workflow is ready to publish once a
-   repo exists.
+2. **Public GitHub repository — done.** <https://github.com/mak777uh/mezogig> (public, MIT, branch `main`);
+   GitHub Pages serves the live demo at <https://mak777uh.github.io/mezogig/>. `.env` is gitignored and absent
+   from the public tree (verified with the GitHub API: `/contents/.env` → 404).
 3. **Video optional** — 90-second script: create gig (15 s) → submit as freelancer (10 s) → approve and show
    balance change (15 s) → claim after countdown (15 s) → dispute + split (20 s) → show `lockedAmount == 0`
    and the explorer page (15 s).
@@ -225,3 +225,104 @@ scripts/                      deploy, demo, fork-demo, export-abi, verify-args.s
 docs/                         SECURITY, TESTING, COVERAGE, SLITHER_REPORT, DEMO, JUDGE_CHECKLIST, SUBMISSION
 deployments/                  deploy receipt (address, tx hash, review period)
 ```
+
+## 9. AKINDO contest pack — “Build with MUSD and MEZO” (Wave 1)
+
+Contest page: <https://app.akindo.io/wave-hacks/OVOO0gdrVU8379D10> (`akindo.io/…` without `app.` is a 404).
+Facts below were read from the live page on 2026-10-19 with a CDP browser (the page is client-rendered;
+`curl` cannot read it).
+
+### 9.1 Facts
+
+| Item | Value |
+|---|---|
+| Pool | **$7,000 in MEZO** — Wave 1 **$2,000**, Wave 2 $5,000; rewards are **proportional to points**, no fixed top-3 |
+| Wave 1 build period | Oct 16 – **Oct 26, 2026** |
+| Submit deadline | **2026-10-26 18:00 MSK = 15:00 UTC** |
+| Judging (Wave 1) | Oct 27 – Nov 1; winners announced online **Nov 23** |
+| Payout | MEZO at the 14-day TWAP on the day KYB completes; **KYB required** (W9/W8-BEN, government ID, proof of address, wallet) |
+| Tracks | Track 1 DeFi (borrowing/lending/looping/yield) · Track 2 Access & Distribution (bots, matching, marketplaces, wallets) — “pick one, or submit to both” |
+| Chains | Mezo, Ethereum, Base, BNB Chain — **Mezo testnet accepted** |
+| Hard requirement | MUSD and/or MEZO integration + working deployment + built during the hackathon (or a new integration on an existing product) |
+
+### 9.2 How it is judged
+
+Two stages: **AKINDO screening** (integration present, working deployment on a supported chain, **all
+submission materials provided** — otherwise not forwarded) → **Mezo core team scoring**:
+
+| Criterion | Weight |
+|---|---|
+| Mezo Integration (depth of MUSD/MEZO use) | **30 %** |
+| Product & Business Viability (problem-solution fit, complementarity with Mezo) | **30 %** |
+| Technical Implementation (code quality, architecture, security, composable & deployable) | **20 %** |
+| User Experience (design, usability, accessibility) | **10 %** |
+| Submission Materials Quality (demo clarity, pitch) | **10 %** |
+
+An organiser reply in the Comments tab states the practical bar: *“it works as expected; users can fully
+test all features; no clear security flaws”* — exactly the line this project is built around.
+
+### 9.3 Materials checklist (what the form expects vs what we have)
+
+| Material | Required | Status |
+|---|---|---|
+| **Live project link** (testnet/mainnet) | yes — screening item | ✅ <https://mak777uh.github.io/mezogig/> (+ explorer: <https://explorer.test.mezo.org/address/0x247b313d0eD3C532B16c7E5f9eA760272361600F>) |
+| **Public GitHub repository** | yes — screening item | ✅ <https://github.com/mak777uh/mezogig> (public, MIT, `.env` absent) |
+| **Project/product deck** | yes | ⏳ build from `docs/` (pptx → pdf) |
+| **2-minute pitch video** | yes | ⏳ build: real UI screenshots + deck slides, captioned, ffmpeg |
+| Submission form fields (16) | yes | ✅ drafts below |
+| KYB | only if selected | ⚠️ owner decision (W9/W8-BEN, ID, address, wallet) |
+| Jurisdiction | yes | ⚠️ prohibited list (China, Iran, Iraq, Cuba, DPRK, Syria, DRC, Donetsk/Luhansk/Crimea) **plus a sanctions catch-all** → owner confirms before registering |
+
+Registration (not done): AKINDO account — sign-in is **email address + magic link** (no wallet/Google/X);
+join Mezo Discord; answer registration questions (full name, email, Telegram, Discord, GitHub, experience
+level, focus area, product status, location, post-hackathon intent); accept the Terms.
+
+### 9.4 Draft form answers (EN)
+
+| Field | Draft |
+|---|---|
+| Project name | **MezoGig** |
+| Category (3–5 words) | Milestone escrow payments |
+| TL;DR (one sentence) | MezoGig is milestone escrow for freelance work: the client locks the whole budget in MUSD, each milestone is released on delivery, and a disputed milestone is split by an arbiter. |
+| How it works (problem, function, MUSD/MEZO position) | Freelancers who deliver first risk not being paid; clients who pay first risk losing the money. MezoGig holds the entire gig budget in an escrow contract and releases it milestone by milestone: the freelancer submits with a proof link, the client approves, and after a review period the freelancer can claim automatically; undelivered milestones are refunded after their deadline; either party can open a dispute and the arbiter splits that milestone; both parties can cancel by mutual signature. MUSD is the settlement asset — a BTC-backed stablecoin removes the volatility problem that makes crypto payments unusable for real work, and EIP-2612 permit lets the client fund a gig in one transaction. (MEZO is not required by the contract; a future version can use it for fee discounts.) |
+| Target group | Freelancers and small agencies working for crypto-native clients in the Bitcoin/Mezo economy, plus DAOs outsourcing bounded tasks; desktop first; any region where a stable USD unit matters. |
+| Tech stack | Solidity 0.8.28 (OpenZeppelin 5, SafeERC20, ReentrancyGuard, EIP-2612), Hardhat, 69 tests (fuzz invariants + reentrancy attacks), Slither; Vite + React + wagmi/viem + RainbowKit; Mezo testnet chainId 31611, MUSD `0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503`. |
+| Track | **Track 2 — Access & Distribution** (MUSD as a payment rail for work); optionally “both”. |
+| Chain deployed on | Mezo testnet (chainId 31611) |
+| Project status | Entirely new — built during Wave 1. |
+| Project readiness | Testnet deployment (contract verified via Sourcify `exact_match`). |
+| Future milestones | 1) hosted frontend + wallet UX polish (2 weeks); 2) mainnet deployment + security hardening/third-party review (4 weeks); 3) dispute v2 — staked arbiters and public reputation (8 weeks). |
+| Team info | [owner name] — operator/product; AI agent team — engineering; X/LinkedIn: [fill] |
+
+### 9.5 Competitive snapshot (14 submissions, Wave 1)
+
+| Project | One-liner | Type |
+|---|---|---|
+| Liqvera | verifiable BTC market data, paid per report in MUSD via x402 | x402 / data — strongest materials (live demo, deck, proof tx) |
+| Lockwatch | unlock/expiry protection for veBTC/veMEZO and MUSD redemptions | alerts |
+| Vigil | Telegram alerts + pre-signed rescue before liquidation/redemption | alerts |
+| Remitsheet for Mezo | pay a spreadsheet in MUSD/MEZO/BTC in one transaction | payments |
+| Mezo Flow | Bitcoin-backed capital across chains | DeFi |
+| MUSD Books | verifiable MUSD statements and invoice payments | payments/bookkeeping |
+| kept (hidden) | unnamed submission | ? |
+| Trove Guardian | Telegram bot + dashboard warning before liquidation | alerts |
+| MUSD Subs | recurring MUSD subscriptions with revenue splits | payments |
+| MUSD Pay Links | MUSD payment links/QR with pre-payment checks | payments |
+| TAWFIK… (“Good”) | low-signal submission | — |
+| MUSD Yield Vault | automated yield on idle MUSD | DeFi |
+| MezoRoute | compare MUSD routes by BTC risk, borrow+deploy in one tx, **live on mainnet** | DeFi |
+| TAWFIK… (ChatGPT assistant) | off-topic | — |
+
+Pattern: the field is crowded with **alerts and simple payment links**, thin on escrow/arbitration. Our edge:
+**Mezo Integration 30 %** (MUSD settlement, permit funding, immutable token, verified contract),
+**Product 30 %** (real freelance market, counterparty risk, no platform fee), **Technical 20 %** (69 tests,
+fuzz invariants, reentrancy attacks, Slither). Materials (10 % + screening gate) are the part to finish.
+
+### 9.6 Open decisions (for the operator)
+
+1. **KYB + jurisdiction** — confirm eligibility before registration (sanctions catch-all).
+2. **Team identity** — the form needs member names and X/LinkedIn.
+3. **Deck and video** — approve the plan (deck + captioned screencast) or provide the owner’s materials.
+4. **Registration** — AKINDO account (email magic link) + Mezo Discord are required; nothing is submitted
+   without the operator’s explicit go.
+
