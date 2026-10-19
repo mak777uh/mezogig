@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "backend": "native",
+  "rasterEngine": "pdfium",
+  "source": "saved",
+  "inputPath": "C:\\111\\projects\\mezogig\\docs\\deck.pdf",
+  "sourceSha256": "015e3ad2b39da8ed0f21ebd92af6f15d14c36e3f9ff50eca648f55589ca69a27",
+  "dpi": 144,
+  "pageCount": 8,
+  "images": [
+    {
+      "index": 1,
+      "page": 1,
+      "path": "C:\\111\\projects\\mezogig\\docs\\slides_render\\page-0001.png",
+      "width": 1920,
+      "height": 1080,
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "byteLength": 164541
+    },
+    {
+      "index": 2,
+      "page": 2,
+      "path": "C:\\111\\projects\\mezogig\\docs\\slides_render\\page-0002.png",
+      "width": 1920,
+      "height": 1080,
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "byteLength": 204572
+    },
+    {
+      "index": 3,
+      "page": 3,
+      "path": "C:\\111\\projects\\mezogig\\docs\\slides_render\\page-0003.png",
+      "width": 1920,
+      "height": 1080,
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "byteLength": 138639
+    },
+    {
+      "index": 4,
+      "page": 4,
+      "path": "C:\\111\\projects\\mezogig\\docs\\slides_render\\page-0004.png",
+      "width": 1920,
+      "height": 1080,
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "byteLength": 226363
+    },
+    {
+      "index": 5,
+      "page": 5,
+      "path": "C:\\111\\projects\\mezogig\\docs\\slides_render\\page-0005.png",
+      "width": 1920,
+      "height": 1080,
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "byteLength": 347206
+    },
+    {
+      "index": 6,
+      "page": 6,
+      "path": "C:\\111\\projects\\mezogig\\docs\\slides_render\\page-0006.png",
+      "width": 1920,
+      "height": 1080,
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "byteLength": 198834
+    },
+    {
+      "index": 7,
+      "page": 7,
+      "path": "C:\\111\\projects\\mezogig\\docs\\slides_render\\page-0007.png",
+      "width": 1920,
+      "height": 1080,
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "byteLength": 194883
+    },
+    {
+      "index": 8,
+      "page": 8,
+      "path": "C:\\111\\projects\\mezogig\\docs\\slides_render\\page-0008.png",
+      "width": 1920,
+      "height": 1080,
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "byteLength": 157424
+    }
+  ],
+  "missingFonts": []
+}

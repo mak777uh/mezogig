@@ -85,6 +85,12 @@ The build is reproducible locally: `cd frontend && npm ci && npm run dev` (publi
 Run the UI locally in two minutes: `cd frontend && npm ci && npm run dev` (Mezo Testnet is wired in; without
 a WalletConnect project id the app uses injected wallets and the console stays clean).
 
+## Deck & 2-minute video
+
+- Deck: [`docs/deck.pdf`](docs/deck.pdf) — 8 slides: problem → solution → how MUSD works in the escrow →
+  demo → technical/security → business → roadmap → team.
+- Video: [`docs/demo.mp4`](docs/demo.mp4) — 113 s, captioned, screen-only (no voice, no face).
+
 ## Test it in ~5 minutes1. **Add Mezo Testnet** to your wallet: RPC `https://rpc.test.mezo.org`, chainId `31611`, symbol `BTC`,
    explorer `https://explorer.test.mezo.org`.
 2. **Get test BTC** from the faucet: <https://faucet.test.mezo.org>.

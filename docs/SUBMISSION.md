@@ -18,6 +18,8 @@
 | MUSD token | [`0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503`](https://explorer.test.mezo.org/address/0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503) (18 dec, EIP-2612) |
 | Review period | **148 s** (short on purpose: the auto-claim path must be testable in minutes) |
 | Live demo | **<https://mak777uh.github.io/mezogig/>** (GitHub Pages; Mezo Testnet wired in) |
+| Deck | [`docs/deck.pdf`](deck.pdf) — 8 slides, weight-aligned |
+| Pitch video | [`docs/demo.mp4`](demo.mp4) — 113 s, captioned, screen-only |
 
 ## 2. What it does (one paragraph)
 
@@ -267,8 +269,8 @@ test all features; no clear security flaws”* — exactly the line this project
 |---|---|---|
 | **Live project link** (testnet/mainnet) | yes — screening item | ✅ <https://mak777uh.github.io/mezogig/> (+ explorer: <https://explorer.test.mezo.org/address/0x247b313d0eD3C532B16c7E5f9eA760272361600F>) |
 | **Public GitHub repository** | yes — screening item | ✅ <https://github.com/mak777uh/mezogig> (public, MIT, `.env` absent) |
-| **Project/product deck** | yes | ⏳ build from `docs/` (pptx → pdf) |
-| **2-minute pitch video** | yes | ⏳ build: real UI screenshots + deck slides, captioned, ffmpeg |
+| **Project/product deck** | yes | ✅ [`docs/deck.pdf`](deck.pdf) — 8 slides |
+| **2-minute pitch video** | yes | ✅ [`docs/demo.mp4`](demo.mp4) — 113 s, captioned, screen-only |
 | Submission form fields (16) | yes | ✅ drafts below |
 | KYB | only if selected | ⚠️ owner decision (W9/W8-BEN, ID, address, wallet) |
 | Jurisdiction | yes | ⚠️ prohibited list (China, Iran, Iraq, Cuba, DPRK, Syria, DRC, Donetsk/Luhansk/Crimea) **plus a sanctions catch-all** → owner confirms before registering |
@@ -320,9 +322,101 @@ fuzz invariants, reentrancy attacks, Slither). Materials (10 % + screening gate)
 
 ### 9.6 Open decisions (for the operator)
 
-1. **KYB + jurisdiction** — confirm eligibility before registration (sanctions catch-all).
+1. **KYB + jurisdiction** — see §10 below (primary source quoted; does not block submission).
 2. **Team identity** — the form needs member names and X/LinkedIn.
-3. **Deck and video** — approve the plan (deck + captioned screencast) or provide the owner’s materials.
+3. **Deck and video** — approved: `docs/deck.pdf`, `docs/demo.mp4` (linked from README and this file).
 4. **Registration** — AKINDO account (email magic link) + Mezo Discord are required; nothing is submitted
    without the operator’s explicit go.
+
+## 10. KYB / jurisdiction / eligibility — primary source
+
+Source: the live contest page <https://app.akindo.io/wave-hacks/OVOO0gdrVU8379D10> (Overview + FAQ + “What is
+submitted” sections), read on **2026-10-19** with a CDP browser. Quotes are verbatim; the page is the
+authority, not this restatement.
+
+### 10.1 KYB — **after** judging, **before** payout; it does not block submission
+
+> “KYB is required. Mezo conducts know-your-business verification on all grant recipients before disbursement.
+> No KYB, no payout. Start preparing for this early if you're submitting as a team.”
+
+> “After the winner announcement, selected teams receive a KYB request from Mezo. Once you complete
+> verification, Mezo will initiate payment on the same day if it is a working day. Otherwise, payment will be
+> initiated on the first working day following completion.”
+
+> “If you're notified as a winner. Mezo contacts potential winners by the email you provide at registration.
+> Verification may include a **W9 or W8-BEN form, government-issued ID, proof of address, and your wallet
+> address**. If you can't be contacted or don't pass verification, the prize is forfeited and awarded to the
+> next-highest-scoring submission.”
+
+> “Grant recipients must complete Mezo's KYB to receive rewards.”
+
+**Stage:** the sequence on the page is: submit → screening → judging → **winner announcement (Nov 23)** →
+KYB request → payout. So KYB is a **payout condition only**; it does not gate the submission form, and there
+is nothing to upload at registration.
+
+**Payout asset — discrepancy to resolve:** the page says, repeatedly, that rewards are paid **in MEZO tokens**:
+
+> “$7,000 USD pool, paid in MEZO.” · “Total pool: $7,000 USD, paid in MEZO tokens.” · “Rewards are paid in MEZO
+> tokens, distributed directly by Mezo. The MEZO amount is calculated using the 14-day time-weighted average
+> price (TWAP) of MEZO on the day you complete KYB.”
+
+A verifier brief says “payout — USDT in Ethereum mainnet”. The only “Ethereum” on the page is the sidebar
+field **Distribution Network: Ethereum** (a network label, not the asset). **Working assumption: MEZO tokens
+on Ethereum** (MEZO is an ERC-20). Because this changes nothing for the build but matters for the owner’s
+payout expectations, it should be confirmed with the organisers in the Comments tab / Mezo Discord before
+registering.
+
+### 10.2 Prohibited jurisdictions (verbatim)
+
+> “Residents or persons located in the following jurisdictions are not eligible to participate:
+> Democratic People's Republic of Korea · Democratic Republic of Congo · Cuba · Donetsk People's Republic of
+> Ukraine · Iran (Islamic Republic of Iran) · Iraq · Luhansk People's Republic of Ukraine · Crimea Region of
+> Ukraine · People's Republic of China · Syrian Arab Republic”
+
+> “Also excluded: any jurisdiction where participation or prize ownership is prohibited by applicable law, and
+> any jurisdiction subject to European Union, British Virgin Islands, United States, United Nations, or other
+> applicable sanctions or embargoes.”
+
+Also from the eligibility section: “You must be at least 18 years old at the time of entry” and “Teams of any
+size; each member registers individually on AKINDO”.
+
+Russia is **not** on the explicit list, but the sanctions catch-all is broad — this is an owner decision, not
+an engineering one. If the owner is in a jurisdiction covered by EU/UK/US/UN sanctions, participation may be
+ineligible regardless of the explicit list.
+
+### 10.3 The three rule checks
+
+**1) Is a testnet deployment a full integration? — Yes, explicitly.**
+
+> “You have a working deployment on Mezo mainnet, Ethereum, Base, or BNB Chain. **Mezo testnet is also
+> accepted**.” · “Supported chains. You can deploy on Mezo, Ethereum, Base, or BNB Chain. **Mezo testnet is
+> welcome too**.” · FAQ: “Mezo testnet works too. What's mandatory is the MUSD or MEZO integration.”
+> · The submission form even has a “Project readiness: mainnet deployment, **testnet deployment**, or demo
+> only” field.
+
+**2) Is the MEZO token required on top of MUSD? — No; “and/or”.**
+
+> “The core requirement is simple: **your project must integrate MUSD and/or MEZO**.”
+> · “Your project integrates **MUSD and/or MEZO**.” · “Projects must integrate **MUSD and/or MEZO** to be
+> eligible.” · Judging criterion: “Effective and meaningful use of **MUSD or MEZO**.”
+
+So our MUSD-only integration is eligible. **Honest gap:** the contract does not touch MEZO at all. In the
+submission we state: “MUSD integration — implemented and verified; MEZO utility — not implemented, in the
+roadmap (fee discounts / staking for arbiters).” Do not claim MEZO usage.
+
+**3) How is the $2,000 split “proportionally to points”? — no fixed winners, no published minimum.**
+
+> “Wave 1: $2,000. Wave 2: $5,000. Distributed on judged results. Rewards are proportional to evaluation
+> scores, not fixed to a top-3. **Every submission that meets the requirements is in the running.**”
+
+> “After each Wave's judging period, the Mezo core team allocates points across eligible submissions. Each
+> project's share of that Wave's pool is proportional to its share of total points. **If a project earns 20 %
+> of the points, it receives 20 % of the pool.**”
+
+> FAQ: “No. Rewards are distributed proportionally to evaluation points across all eligible submissions.
+> Strong projects earn more; **there's no cap on how many teams can be rewarded**.”
+
+No minimum-point threshold is published on the page. Practically this means: a strong score earns a
+proportional share; the only hard gates are the screening requirements (integration, deployment, materials).
+
 

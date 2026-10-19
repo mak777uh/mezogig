@@ -1,0 +1,17 @@
+file 'C:/111/projects/mezogig/docs/video_frames/frame-01.png'
+duration 9
+file 'C:/111/projects/mezogig/docs/video_frames/frame-02.png'
+duration 13
+file 'C:/111/projects/mezogig/docs/video_frames/frame-03.png'
+duration 13
+file 'C:/111/projects/mezogig/docs/video_frames/frame-04.png'
+duration 13
+file 'C:/111/projects/mezogig/docs/video_frames/frame-05.png'
+duration 15
+file 'C:/111/projects/mezogig/docs/video_frames/frame-06.png'
+duration 13
+file 'C:/111/projects/mezogig/docs/video_frames/frame-07.png'
+duration 13
+file 'C:/111/projects/mezogig/docs/video_frames/frame-08.png'
+duration 12
+file 'C:/111/projects/mezogig/docs/video_frames/frame-08.png'
