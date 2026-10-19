@@ -12,7 +12,8 @@
 | Coverage | **100 % statements / 92 % branches / 100 % functions / 100 % lines** (escrow) — [`docs/COVERAGE.md`](docs/COVERAGE.md) |
 | Static analysis | Slither 0.11.6 — 6 findings, all reviewed — [`docs/SLITHER_REPORT.md`](docs/SLITHER_REPORT.md) |
 | Local end-to-end | full lifecycle executed on a local chain, tx list — [`docs/DEMO.md`](docs/DEMO.md) |
-| Testnet deploy | **pending a throwaway deployer key** — one command, see *Deploy* below |
+| Testnet deploy | **deployed** on Mezo Testnet — `0x247b313d0eD3C532B16c7E5f9eA760272361600F`, block `16247351`, tx `0xc9ea7697…ad7e44` |
+| Verification | **Sourcify `exact_match`** (creation + runtime) — [repo record](https://repo.sourcify.dev/contracts/full_match/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F/) |
 
 ## The problem
 
@@ -62,12 +63,11 @@ milestone:  Pending ──submit──▶ Submitted ──approve─────
 | Network | Contract | Address |
 |---|---|---|
 | Local (verification run) | `MezoGigEscrow` | `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512` + `MockMUSD` — see [`docs/DEMO.md`](docs/DEMO.md) |
-| **Mezo Testnet (31611)** | `MezoGigEscrow` | **`0x247b313d0eD3C532B16c7E5f9eA760272361600F** |
+| **Mezo Testnet (31611)** | `MezoGigEscrow` | [`0x247b313d0eD3C532B16c7E5f9eA760272361600F`](https://explorer.test.mezo.org/address/0x247b313d0eD3C532B16c7E5f9eA760272361600F) — deploy tx [`0xc9ea7697…`](https://explorer.test.mezo.org/tx/0xc9ea76977cd4840160378e2ce3d52269a22dc090f5b3daeed0ec68a562ad7e44), verified on [Sourcify](https://repo.sourcify.dev/contracts/full_match/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F/) |
 | Mezo Testnet | MUSD (ERC-20, 18 dec, permit) | [`0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503`](https://explorer.test.mezo.org/address/0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503) |
 
-Live demo (GitHub Pages): **`<published URL>`** — the workflow in `.github/workflows/pages.yml` builds and
-publishes `frontend/dist` automatically (set repository variables `VITE_ESCROW_ADDRESS` and
-`VITE_DEPLOY_BLOCK`).
+Live demo: build is ready in `frontend/dist` (built with the real escrow address); hosting is pending
+(GitHub Pages workflow in `.github/workflows/pages.yml`, Vercel alternative documented below).
 
 ## Test it in ~5 minutes
 
@@ -136,7 +136,11 @@ npm install && npm run build
 Verify on the explorer (Blockscout-compatible endpoint):
 
 ```bash
-npx hardhat verify --network mezoTestnet 0x247b313d0eD3C532B16c7E5f9eA760272361600F 0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503 148
+# The Mezo testnet explorer has no Etherscan-compatible API, so verification goes through Sourcify v2
+# (chain 31611 is supported). Result for this deployment: exact_match on creation + runtime.
+npm run verify:sourcify
+# manual values if you ever need them: solc 0.8.28, optimizer 200 runs, evmVersion london,
+# constructor args (0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503, 148)
 ```
 
 ## Security

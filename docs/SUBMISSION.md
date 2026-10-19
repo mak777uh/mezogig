@@ -10,14 +10,14 @@
 | Project | **MezoGig** — milestone escrow for freelance gigs, settled in MUSD |
 | Network | Mezo Testnet, chainId **31611** (testnet only, no real money) |
 | Main artifact | `mezogig-release.zip` (source + docs, no `node_modules`/`.env`/build output) |
-| Repository | local git, 4 commits, MIT — public GitHub pending owner access |
+| Repository | local git, 6 commits, MIT — public GitHub pending owner access |
 | Contract | `contracts/MezoGigEscrow.sol` (solc 0.8.28, optimizer 200, `evmVersion london`) |
 | Contract address | **`0x247b313d0eD3C532B16c7E5f9eA760272361600F`** |
 | Explorer | `https://explorer.test.mezo.org/address/0x247b313d0eD3C532B16c7E5f9eA760272361600F` |
-| Verification | **`verified (Sourcify exact_match; see §4)`** — see §4 |
+| Verification | **Sourcify `exact_match`** (creation + runtime, matchId `56559336`) — [public record](https://repo.sourcify.dev/contracts/full_match/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F/) |
 | MUSD token | [`0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503`](https://explorer.test.mezo.org/address/0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503) (18 dec, EIP-2612) |
 | Review period | **148 s** (short on purpose: the auto-claim path must be testable in minutes) |
-| Live demo | `<frontend URL>` (GitHub Pages workflow included; Vercel alternative documented) |
+| Live demo | build ready in `frontend/dist` with the real escrow address; hosting pending (GitHub Pages workflow included, Vercel alternative documented) |
 
 ## 2. What it does (one paragraph)
 
@@ -33,10 +33,20 @@ upgradeability, and no way to withdraw funds outside these paths.
 
 ### 3.1 Deployment (Mezo Testnet)
 
-| Step | Hash |
+| Step | Value |
 |---|---|
-| `MezoGigEscrow` deployment | **`0xc9ea76977cd4840160378e2ce3d52269a22dc090f5b3daeed0ec68a562ad7e44`** |
-| Verification | **`Sourcify **exact_match** (creation + runtime) — https://repo.sourcify.dev/contracts/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F`** |
+| `MezoGigEscrow` deployed at | `0x247b313d0eD3C532B16c7E5f9eA760272361600F` |
+| Deployment tx | `0xc9ea76977cd4840160378e2ce3d52269a22dc090f5b3daeed0ec68a562ad7e44` |
+| Block / gas used | `16247351` / `2393779` |
+| Deployer | `0x0A66a9dEF221Efc698b6bbecA82cAE6729A8aba8` (team testnet wallet) |
+| Verification | **Sourcify `exact_match`** (creation + runtime), matchId `56559336`, verification job `9c50c6a0-2e7f-4032-93ed-39717c84e10f` — [repo record](https://repo.sourcify.dev/contracts/full_match/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F/) |
+
+> Note: the Mezo testnet explorer (Blockscout) does **not** expose the Etherscan-compatible API
+> (`/api` returns 404), so `hardhat verify` cannot talk to it. The chain **is** supported by Sourcify
+> (`{"name":"Mezo Testnet","chainId":31611,"supported":true,"etherscanAPI":false}`), and the contract is
+> verified there with an exact match on both creation and runtime bytecode. Sourcify is the canonical
+> public verification record for this deployment; the explorer page still shows the deployed bytecode.
+> Reproduce: `npm run verify:sourcify`.
 
 ### 3.2 Contract state after deployment (read calls, no gas needed)
 
@@ -71,19 +81,24 @@ Local run (see `docs/DEMO.md` for the task-by-task breakdown):
 
 After the run the escrow held **0 MUSD**: every unit of the deposit was settled exactly once.
 
-## 4. How to verify the contract (exact constructor arguments)
+## 4. How the contract is verified (and how to reproduce it)
 
-```bash
-./scripts/verify-args.sh
-# equivalently:
-npx hardhat verify --network mezoTestnet 0x247b313d0eD3C532B16c7E5f9eA760272361600F 0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503 148
-```
-
-Manual explorer form:
+The Mezo testnet explorer is Blockscout **without the Etherscan-compatible API** (`/api` → 404), so
+`hardhat verify` cannot verify there. The chain is supported by Sourcify, and the deployment is verified
+with an **exact match on creation and runtime bytecode**:
 
 | Field | Value |
 |---|---|
-| Compiler | `0.8.28` |
+| Verification service | Sourcify v2, chain **31611** |
+| Result | `exact_match` (creation + runtime), matchId `56559336` |
+| Public record | <https://repo.sourcify.dev/contracts/full_match/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F/> |
+| Reproduce | `npm run verify:sourcify` (reads `artifacts/build-info`, posts standard JSON to `/v2/verify/31611/<address>`, polls the job) |
+
+Constructor arguments used at deployment (for any manual re-verification):
+
+| Field | Value |
+|---|---|
+| Compiler | `0.8.28+commit.7893614a` |
 | Optimization | enabled, 200 runs |
 | EVM version | `london` |
 | Constructor arg 1 (`address`) | `0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503` |
@@ -124,7 +139,7 @@ Manual explorer form:
 | Demo mode with short review period | deployment `REVIEW_PERIOD_SECONDS=148`; UI counts down to claimable |
 | Frontend deployed for free | GitHub Pages workflow `.github/workflows/pages.yml` (pending repo access); Vercel instructions in README |
 | Public repo, MIT, README with problem/solution/state machine/addresses/5-min test/tests/Security | README.md + LICENSE + docs/ |
-| Contract verified on explorer | §4 (pending deployment) |
+| Contract verified on explorer | Sourcify **exact_match** on chain 31611 (the Mezo explorer has no Etherscan API — see §4) |
 | A couple of real test orders on-chain | **Gap:** MUSD borrow skipped → no public-testnet orders; local + fork runs provided instead (see §3.3) |
 | No private keys in the repo | `.env` gitignored, only `.env.example` committed; keys live in `env\secrets\` outside the repo; checked with `git status --ignored` |
 | Optional 1–2 min video | script below, recording pending deployment |
