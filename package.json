@@ -12,7 +12,9 @@
     "deploy:mezo": "hardhat run scripts/deploy.js --network mezoTestnet",
     "verify:mezo": "hardhat verify --network mezoTestnet",
     "demo:local": "hardhat run scripts/demo.js --network localhost",
-    "abi": "node scripts/export-abi.js"
+    "abi": "node scripts/export-abi.js",
+    "finalize": "node scripts/finalize.js",
+    "check:musd": "node scripts/check-musd.js"
   },
   "keywords": [
     "mezo",
@@ -27,6 +29,7 @@
   "type": "commonjs",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "dotenv": "^18.0.8",
     "hardhat": "^2.29.1"
   },
   "dependencies": {
