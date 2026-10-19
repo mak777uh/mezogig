@@ -1,0 +1,5 @@
+{
+  "filter_paths": "node_modules|test|contracts/mocks|frontend",
+  "solc_remaps": [],
+  "compile_force_framework": "hardhat"
+}

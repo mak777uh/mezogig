@@ -1,0 +1,35 @@
+{
+  "name": "mezogig",
+  "version": "1.0.0",
+  "description": "MezoGig — milestone escrow for freelance gigs paid in MUSD on Mezo testnet",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "coverage": "hardhat --config hardhat.config.coverage.js coverage",
+    "node": "hardhat node",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:mezo": "hardhat run scripts/deploy.js --network mezoTestnet",
+    "verify:mezo": "hardhat verify --network mezoTestnet",
+    "demo:local": "hardhat run scripts/demo.js --network localhost",
+    "abi": "node scripts/export-abi.js"
+  },
+  "keywords": [
+    "mezo",
+    "musd",
+    "escrow",
+    "freelance",
+    "milestones",
+    "solidity"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.29.1"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "5.0.2"
+  }
+}
