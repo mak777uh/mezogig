@@ -3,6 +3,17 @@
 > Hackathon project for **AKINDO “Build with MUSD and MEZO”**.
 > Testnet only. No real money, no platform fee, no admin keys.
 
+**Status**
+
+| | |
+|---|---|
+| Contract | `contracts/MezoGigEscrow.sol` — compiled with solc 0.8.28, `evmVersion: london` |
+| Tests | **69 passing** (`npm test`) |
+| Coverage | **100 % statements / 92 % branches / 100 % functions / 100 % lines** (escrow) — [`docs/COVERAGE.md`](docs/COVERAGE.md) |
+| Static analysis | Slither 0.11.6 — 6 findings, all reviewed — [`docs/SLITHER_REPORT.md`](docs/SLITHER_REPORT.md) |
+| Local end-to-end | full lifecycle executed on a local chain, tx list — [`docs/DEMO.md`](docs/DEMO.md) |
+| Testnet deploy | **pending a throwaway deployer key** — one command, see *Deploy* below |
+
 ## The problem
 
 Freelancers who take work from strangers have no payment guarantee. If they deliver first, the client can
@@ -11,24 +22,22 @@ incentive problem, but “send the whole budget to a contract and hope” is not
 into **milestones**, and each milestone can go wrong in its own way (not delivered, delivered late,
 delivered but disputed).
 
-There is a second problem specific to crypto freelancing: the budget is usually quoted in a volatile asset.
-Mezo solves it with **MUSD**, a BTC-collateralised stablecoin on Mezo. A freelancer can be paid in a
-stable unit while the client keeps their BTC exposure, and the escrow contract never touches BTC at all —
-it only moves MUSD.
+Crypto freelancing has a second problem: budgets are usually quoted in a volatile asset. Mezo solves it
+with **MUSD**, a BTC-collateralised stablecoin. The freelancer is paid in a stable unit, the client keeps
+their BTC exposure, and the escrow contract never touches BTC — it only moves MUSD.
 
 ## The solution
 
-`MezoGigEscrow` is one small contract that holds the **entire gig budget up-front** and releases it one
-milestone at a time:
+`MezoGigEscrow` holds the **entire gig budget up-front** and releases it one milestone at a time:
 
 | Step | Who | What happens |
 |---|---|---|
-| `createGig` / `createGigWithPermit` | client | Deposits `sum(amounts)` MUSD in one transfer. Each milestone gets an amount and a deadline. |
+| `createGig` / `createGigWithPermit` | client | Deposits `sum(amounts)` MUSD in one transfer (plain `approve` or an EIP-2612 permit). Each milestone gets an amount and a deadline. |
 | `submitMilestone` | freelancer | Delivers before the deadline, attaches a proof URI. |
 | `approveMilestone` | client | Accepts; the milestone amount goes to the freelancer. |
 | `claimMilestone` | freelancer | If the client stays silent for `reviewPeriod`, the freelancer claims automatically. |
 | `refundExpired` | client | Milestone not submitted before its deadline → the client gets it back. |
-| `openDispute` | either party | Freezes a milestone for the arbiter (chosen at gig creation). |
+| `openDispute` | either party | Freezes a milestone for the arbiter chosen at gig creation. |
 | `resolveDispute` | arbiter | Splits the milestone: `bps` to the freelancer, the rest back to the client. |
 | `proposeCancel` / `confirmCancel` / `revokeCancel` | both parties | Mutual cancellation: both signatures required, pending funds return to the client. |
 
@@ -41,7 +50,7 @@ can never pay out more than it took in**.
 gig:        Active ──▶ Completed
               └────▶ Cancelled (mutual, both signatures)
 
-milestone:  Pending ──submit──▶ Submitted ──approve──────▶ Paid
+milestone:  Pending ──submit──▶ Submitted ──approve──────────▶ Paid
                │                    │  └──claim (after review)──▶ Paid
                │                    └──openDispute──▶ Disputed ──resolve──▶ Resolved
                ├──deadline passed──▶ Refunded
@@ -52,56 +61,56 @@ milestone:  Pending ──submit──▶ Submitted ──approve─────
 
 | Network | Contract | Address |
 |---|---|---|
-| Mezo Testnet (chainId 31611) | `MezoGigEscrow` | **`0x…` — see `deployments/mezoTestnet.json`** |
+| Local (verification run) | `MezoGigEscrow` | `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512` + `MockMUSD` — see [`docs/DEMO.md`](docs/DEMO.md) |
+| **Mezo Testnet (31611)** | `MezoGigEscrow` | **`<filled by `npm run deploy:mezo` → deployments/mezoTestnet.json`>** |
 | Mezo Testnet | MUSD (ERC-20, 18 dec, permit) | [`0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503`](https://explorer.test.mezo.org/address/0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503) |
 
-Live demo (GitHub Pages): **`https://<your-user>.github.io/mezogig/`** — see `frontend/README` for the
-one-command build.
+Live demo (GitHub Pages): **`<published URL>`** — the workflow in `.github/workflows/pages.yml` builds and
+publishes `frontend/dist` automatically (set repository variables `VITE_ESCROW_ADDRESS` and
+`VITE_DEPLOY_BLOCK`).
 
 ## Test it in ~5 minutes
 
-1. **Add Mezo Testnet** to your wallet:
-   - RPC `https://rpc.test.mezo.org`
-   - chainId `31611`
-   - symbol `BTC`
-   - explorer `https://explorer.test.mezo.org`
+1. **Add Mezo Testnet** to your wallet: RPC `https://rpc.test.mezo.org`, chainId `31611`, symbol `BTC`,
+   explorer `https://explorer.test.mezo.org`.
 2. **Get test BTC** from the faucet: <https://faucet.test.mezo.org>.
-3. **Get test MUSD**: go to <https://testnet.mezo.org>, borrow MUSD against your test BTC
-   (minimum 2000 MUSD debt). MUSD on testnet is `0x1189…c503`.
-4. Open the demo, connect the wallet, press **Create gig**:
-   - freelancer = a second wallet (or a teammate’s address),
-   - two milestones, e.g. `100` and `150` MUSD, deadlines a few minutes apart,
-   - arbiter = any third address (or `0x0` to disable disputes).
-   - Press **Approve MUSD**, then **Create gig**.
-5. Copy the **invite link** (top right of the gig card) and open it with the freelancer wallet:
-   **Submit** the milestone with any proof link. Back on the client wallet: **Approve & pay** — MUSD moves
-   immediately.
-6. Try the trustless paths:
-   - submit, wait out the demo review period (a few minutes), then **Claim**;
-   - let a deadline pass and use **Refund**;
-   - open a **Dispute** and resolve it from the arbiter wallet with e.g. `5000` bps (50/50);
-   - propose **cancel** from one wallet and accept from the other.
+3. **Get test MUSD**: at <https://testnet.mezo.org>, borrow MUSD against your test BTC (minimum 2000 MUSD
+   debt). Testnet MUSD is `0x1189…c503`.
+4. Open the demo, connect the wallet, press **Create gig**: freelancer = a second wallet (or a teammate’s
+   address), two milestones (`100` and `150` MUSD), deadlines a few minutes apart, arbiter = a third address
+   (or `0x0` to disable disputes). Press **Approve MUSD**, then **Create gig**.
+5. Copy the **invite link** from the gig card and open it with the freelancer wallet: **Submit** a milestone
+   with any proof link. Back on the client wallet: **Approve & pay** — MUSD moves immediately.
+6. Try the trustless paths: submit and wait out the demo review period, then **Claim**; let a deadline pass
+   and use **Refund**; open a **Dispute** and resolve it from the arbiter wallet with e.g. `5000` bps;
+   propose **cancel** from one wallet and accept from the other.
 
-The demo deployment uses a **short review period** (see `REVIEW_PERIOD_SECONDS` in the deploy step) so the
-auto-claim can be tested without waiting days.
+The demo deployment uses a **short review period** (148 s by default) so the auto-claim can be tested
+without waiting days.
 
 ## Repository layout
 
 ```
 contracts/
   MezoGigEscrow.sol        # the escrow contract (no owner, no fee, immutable token)
-  mocks/MockMUSD.sol       # local-only ERC-20 + permit used by tests
+  mocks/MockMUSD.sol       # local-only ERC-20 + permit used by tests and the local demo
+  mocks/ReentrantMUSD.sol  # malicious token used to attack every payout path
 test/
-  MezoGigEscrow.test.js    # 52 tests: happy paths, negative cases, accounting invariants, fuzz
+  MezoGigEscrow.test.js    # happy paths, negative cases, accounting invariants, fuzz
+  Guards.test.js           # terminal-state guards, uint128 bound, frozen disputes
+  Reentrancy.test.js       # nonReentrant holds on every payout path
 scripts/
-  deploy.js                # deploys and writes deployments/<network>.json
+  deploy.js                # deploys (auto-deploys MockMUSD on localhost) + writes deployments/<net>.json
   export-abi.js            # copies the ABI into the frontend
-  demo.js                  # local end-to-end flow against `hardhat node`
+  demo.js                  # end-to-end flow: approve, auto-claim, dispute split, mutual cancel
 frontend/                  # Vite + React + wagmi/viem + RainbowKit, Mezo Testnet wired in
-deployments/               # deploy receipts (address, tx, review period)
+deployments/               # deploy receipts
 docs/
-  SECURITY.md              # threat model, invariants, Slither report summary
-  TESTING.md               # how to run tests and coverage
+  SECURITY.md              # threat model, invariants, limitations
+  TESTING.md               # what the tests cover and why
+  COVERAGE.md              # coverage numbers and the viaIR note
+  SLITHER_REPORT.md        # static analysis results and dispositions
+  DEMO.md                  # executed demo, tx hashes, testnet checklist
 ```
 
 ## Run tests
@@ -109,8 +118,8 @@ docs/
 ```bash
 npm install
 npm run compile
-npm test          # 52 passing
-npm run coverage  # statement/branch/function coverage report
+npm test          # 69 passing
+npm run coverage  # 100 % stmts / 92 % branch / 100 % funcs (escrow)
 ```
 
 ## Deploy
@@ -118,38 +127,31 @@ npm run coverage  # statement/branch/function coverage report
 ```bash
 cp .env.example .env       # put a THROWAWAY testnet key in DEPLOYER_PRIVATE_KEY
 npm run deploy:mezo
-# -> deployments/mezoTestnet.json (address + tx hash)
+# -> deployments/mezoTestnet.json (address, tx hash, review period)
 node scripts/export-abi.js
-cd frontend && cp .env.example .env   # set VITE_ESCROW_ADDRESS, VITE_DEPLOY_BLOCK
+cd frontend && cp .env.example .env   # VITE_ESCROW_ADDRESS, VITE_DEPLOY_BLOCK
 npm install && npm run build
 ```
 
-Verify the contract on the explorer (Blockscout-compatible endpoint):
+Verify on the explorer (Blockscout-compatible endpoint):
 
 ```bash
-npx hardhat verify --network mezoTestnet <ESCROW_ADDRESS> <MUSD_ADDRESS> <REVIEW_PERIOD_SECONDS>
-```
-
-Publish the frontend for free with GitHub Pages:
-
-```bash
-cd frontend && npm run build
-# push dist/ to gh-pages, or use the included .github/workflows/pages.yml
+npx hardhat verify --network mezoTestnet <ESCROW_ADDRESS> 0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503 148
 ```
 
 ## Security
 
-See [`docs/SECURITY.md`](docs/SECURITY.md) for the full threat model. Summary:
+Full threat model: [`docs/SECURITY.md`](docs/SECURITY.md). Summary:
 
-- **No owner, no admin, no fee, no upgradeability.** The only ways MUSD leaves the contract are the five
-  payout paths above, each of which is bounded by a single milestone’s amount and guarded by a role and a
-  state check.
-- **Accounting invariant:** `paidOut + refunded ≤ funded`, and each milestone settles exactly once
-  (status machine). Fuzz tests assert this over randomized amounts, splits and terminal paths.
-- **Checks-effects-interactions** on every payout, `nonReentrant` on all state-changing functions,
-  `SafeERC20` for token transfers, token address `immutable`.
-- **No arbitrary calls, no `delegatecall`, no `selfdestruct`, no `tx.origin`.**
-- MIT licensed; testnet only; nothing here is an audited production product.
+- **No owner, no admin, no fee, no upgradeability.** MUSD leaves the contract only through the five payout
+  paths above, each bounded by one milestone’s amount and guarded by a role and a state check.
+- **Accounting invariant:** `paidOut + refunded ≤ funded`, each milestone settles exactly once. Fuzz tests
+  assert this over randomized amounts, splits and terminal paths.
+- **Checks-effects-interactions**, `nonReentrant` everywhere, `SafeERC20`, immutable token address.
+- **Reentrancy proven, not assumed:** a malicious ERC-20 attacks every payout path in
+  `test/Reentrancy.test.js`; all six attacks are rejected by the guard, the outer call still settles once.
+- No `delegatecall`, no `selfdestruct`, no `tx.origin`, no arbitrary transfers. MIT licensed, testnet only,
+  not a third-party-audited product.
 
 ## License
 
