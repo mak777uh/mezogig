@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# Constructor arguments for verifying MezoGigEscrow on the Mezo testnet explorer.
+# Constructor arguments for the MezoGigEscrow deployment + the verification command.
 #
-# The contract is deployed with exactly two immutable constructor arguments:
+# MezoGigEscrow is deployed with exactly two immutable constructor arguments:
 #   1. the MUSD token address (Mezo testnet MUSD, 18 decimals)
 #   2. the review period in seconds (148 for the public demo)
+#
+# The Mezo testnet explorer (Blockscout) has NO Etherscan-compatible API, so
+# `hardhat verify` cannot verify there. The chain is supported by Sourcify, and
+# verification goes through the Sourcify v2 endpoint (see scripts/verify-sourcify.js).
 #
 # Usage:
 #   ./scripts/verify-args.sh                 # reads the address from deployments/mezoTestnet.json
 #   ./scripts/verify-args.sh 0xYourEscrow    # explicit contract address
 #   MUSD_ADDRESS=0x... REVIEW_PERIOD_SECONDS=148 ./scripts/verify-args.sh
-#
-# It prints the values first (so they can also be pasted into the explorer's manual
-# "verify & publish" form, ABI-encoded as (address,uint256)), then runs:
-#   npx hardhat verify --network mezoTestnet <escrow> <musd> <reviewPeriod>
 set -euo pipefail
 
 MUSD_ADDRESS="${MUSD_ADDRESS:-0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503}"
@@ -31,17 +31,15 @@ if [ -z "$ESCROW_ADDRESS" ]; then
 fi
 
 cat <<EOF
-=== MezoGigEscrow verification ===
+=== MezoGigEscrow deployment facts ===
 network:            mezoTestnet (chainId 31611)
-explorer:           https://explorer.test.mezo.org
+explorer:           https://explorer.test.mezo.org/address/$ESCROW_ADDRESS
 contract:           $ESCROW_ADDRESS
 constructor arg 1:  $MUSD_ADDRESS          (MUSD token, address)
 constructor arg 2:  $REVIEW_PERIOD_SECONDS (review period, uint256 seconds)
-
-Manual verification values (explorer form):
-  compiler:       0.8.28, optimizer enabled (200 runs), evmVersion london
-  constructor:    0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503, $REVIEW_PERIOD_SECONDS
-=== running hardhat verify ===
+compiler:           0.8.28+commit.7893614a
+settings:           optimizer enabled (200 runs), evmVersion london
+=== verifying through Sourcify v2 ===
 EOF
 
-npx hardhat verify --network mezoTestnet "$ESCROW_ADDRESS" "$MUSD_ADDRESS" "$REVIEW_PERIOD_SECONDS"
+node scripts/verify-sourcify.js

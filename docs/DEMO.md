@@ -47,31 +47,39 @@ proposeCancel #3        0xf2412a211b273c8c3eca53deec10fe6935ba74f8fafc7435574b10
 confirmCancel #3        0x7c1ad062f91384c694980f56966b853c8390093cef84a0699eda3c61cdb16103
 ```
 
-## 2. Public Mezo Testnet run (required by the submission, pending deployer key)
+## 2. Public Mezo Testnet deployment — **done** (2026-10-19)
 
-The deployment needs a throwaway testnet wallet funded with test BTC, plus optionally two more keys so that
-“client / freelancer / arbiter” are distinct signers (see `scripts/demo.js` which uses signers 0–2).
+| | |
+|---|---|
+| Contract | `0x247b313d0eD3C532B16c7E5f9eA760272361600F` |
+| Deployment tx | `0xc9ea76977cd4840160378e2ce3d52269a22dc090f5b3daeed0ec68a562ad7e44` |
+| Block / gas used | `16247351` / `2393779` |
+| Explorer | <https://explorer.test.mezo.org/address/0x247b313d0eD3C532B16c7E5f9eA760272361600F> |
+| Verification | Sourcify **`exact_match`** (creation + runtime) — <https://repo.sourcify.dev/contracts/full_match/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F/> |
+| Constructor args | `(0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503, 148)` |
 
-Checklist once the key is available:
+How it was done (reproducible):
 
 ```bash
-cp .env.example .env
-# DEPLOYER_PRIVATE_KEY=<throwaway key>, MUSD_ADDRESS=0x1189…c503, REVIEW_PERIOD_SECONDS=148
-# FREELANCER_PRIVATE_KEY / ARBITER_PRIVATE_KEY are optional for scripts/demo.js on testnet
-npm run deploy:mezo
-npx hardhat verify --network mezoTestnet <escrow> 0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503 148
+npm run deploy:mezo        # writes deployments/mezoTestnet.json
+npm run verify:sourcify    # the Mezo explorer has no Etherscan-compatible API
 node scripts/export-abi.js
-cd frontend && npm run build   # then publish dist/ (GitHub Pages workflow included)
+cd frontend && npm run build
 ```
 
-Then replace the placeholder rows in the root `README.md`:
+**Why no lifecycle transactions on the public testnet:** creating a gig requires MUSD, and testnet MUSD can
+only be obtained by borrowing against a BTC collateral position (minimum 2000 MUSD debt). That was
+deliberately skipped for the submission — the full lifecycle is demonstrated on a local chain (§1) and the
+real-MUSD integration is proven by read-only calls (`node scripts/check-musd.js`). This gap is stated openly
+in `docs/SUBMISSION.md` §7 rather than hidden.
 
-| Placeholder | Fill with |
+Post-deploy checklist for whoever publishes the frontend:
+
+| Step | Value |
 |---|---|
-| `deployments/mezoTestnet.json → escrow` | deployed address |
-| `deployments/mezoTestnet.json → txHash` | creation transaction |
-| 2–3 `GigCreated` / `MilestoneApproved` / `DisputeResolved` hashes | real testnet txs from the demo run |
-| `https://<your-user>.github.io/mezogig/` | the published frontend URL |
+| `VITE_ESCROW_ADDRESS` | `0x247b313d0eD3C532B16c7E5f9eA760272361600F` |
+| `VITE_DEPLOY_BLOCK` | `16247351` |
+| Publish | `frontend/dist` (GitHub Pages workflow included, Vercel alternative in README) |
 
 ## 3. What a judge can do without any of that
 

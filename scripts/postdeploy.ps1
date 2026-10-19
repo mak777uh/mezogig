@@ -17,14 +17,15 @@ if ($balance -le 0) { Write-Host "  no gas yet — aborting" -ForegroundColor Ye
 Write-Host "== 2/6 deploy ==" -ForegroundColor Cyan
 & npx hardhat run scripts/deploy.js --network mezoTestnet
 if ($LASTEXITCODE -ne 0) { throw "deploy failed" }
+$receipt = Get-Content -Raw deployments/mezoTestnet.json | ConvertFrom-Json
+$escrow = $receipt.escrow
+$deployBlock = if ($receipt.blockNumber) { [string]$receipt.blockNumber } else { "0" }
+Write-Host "  escrow: $escrow (block $deployBlock)"
 
-Write-Host "== 3/6 verify ==" -ForegroundColor Cyan
-$musd = "0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503"
-$review = if ($env:REVIEW_PERIOD_SECONDS) { $env:REVIEW_PERIOD_SECONDS } else { "148" }
-$escrow = (Get-Content -Raw deployments/mezoTestnet.json | ConvertFrom-Json).escrow
-& npx hardhat verify --network mezoTestnet $escrow $musd $review
+Write-Host "== 3/6 verify (Sourcify v2 — the Mezo explorer has no Etherscan API) ==" -ForegroundColor Cyan
+& node scripts/verify-sourcify.js
 $verifyCode = $LASTEXITCODE
-Write-Host "  verify exit: $verifyCode (0 = ok, non-zero = check explorer manually)"
+Write-Host "  verify exit: $verifyCode (0 = exact_match)"
 
 Write-Host "== 4/6 fill docs ==" -ForegroundColor Cyan
 & node scripts/finalize.js
@@ -33,7 +34,7 @@ Write-Host "== 5/6 export ABI + build frontend ==" -ForegroundColor Cyan
 & node scripts/export-abi.js
 Push-Location frontend
 $env:VITE_ESCROW_ADDRESS = $escrow
-$env:VITE_DEPLOY_BLOCK = "0"
+$env:VITE_DEPLOY_BLOCK = $deployBlock
 & npm run build
 Pop-Location
 

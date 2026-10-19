@@ -30,6 +30,7 @@ async function main() {
 
   const address = await escrow.getAddress();
   const tx = escrow.deploymentTransaction();
+  const receipt = tx ? await tx.wait() : null;
   const deployInfo = {
     network: network.name,
     chainId: Number(network.config.chainId),
@@ -38,6 +39,7 @@ async function main() {
     reviewPeriodSeconds,
     deployer: deployer.address,
     txHash: tx ? tx.hash : null,
+    blockNumber: receipt ? receipt.blockNumber : null,
     deployedAt: new Date().toISOString(),
   };
 

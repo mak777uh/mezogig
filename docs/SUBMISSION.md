@@ -118,6 +118,64 @@ Constructor arguments used at deployment (for any manual re-verification):
    Either: **Propose cancel** → other party **Accept cancel**.
 7. No wallet? The UI still lists gigs and every field via read-only calls.
 
+## 5.1 View the frontend locally in 2 minutes (hosting not required)
+
+```bash
+cd frontend
+npm ci          # or: npm install
+npm run dev     # opens http://127.0.0.1:5173 — Mezo Testnet is already wired in
+```
+
+Production build (static files, works on any http server):
+
+```bash
+npm run build          # -> frontend/dist
+npx vite preview       # or: npx serve dist
+```
+
+Screenshots (taken from the real build with the deployed address baked in — see the footer):
+
+| File | What it shows |
+|---|---|
+| [`docs/screens/01-my-gigs.png`](screens/01-my-gigs.png) | Gigs list loaded from `GigCreated` events, client/freelancer filters, wallet connect, contract link in the footer |
+| [`docs/screens/02-create-gig.png`](screens/02-create-gig.png) | Create-gig form: freelancer + arbiter + brief, two milestones with amounts and deadlines, total deposit, **Approve MUSD → Create gig** |
+| [`docs/screens/03-connect-wallet.png`](screens/03-connect-wallet.png) | Wallet modal (RainbowKit) — Mezo Testnet is the only chain configured |
+| [`docs/screens/04-help.png`](screens/04-help.png) | “How to test in 5 min” tab — the judge path with faucet and MUSD links |
+
+The frontend falls back to injected wallets when no WalletConnect project id is configured, so a clean
+`npm run dev` shows zero console errors.
+
+## 5.2 Check everything with one command
+
+```bash
+# 1) deployed contract + real MUSD parameters (read-only, no gas, no wallet)
+ESCROW_ADDRESS=0x247b313d0eD3C532B16c7E5f9eA760272361600F node scripts/check-musd.js
+```
+
+Expected output:
+
+```
+chainId:  31611
+MUSD:     0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503
+  name:            Mezo USD
+  symbol:          MUSD
+  decimals:        18
+  EIP-2612 permit:  supported
+escrow:   0x247b313d0eD3C532B16c7E5f9eA760272361600F
+  musd():        0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503
+  reviewPeriod:  148 s
+  gigCount:      0
+```
+
+```bash
+# 2) the test suite and coverage (69 tests, no network needed)
+npm ci && npm test
+npm run coverage
+
+# 3) the verification record (Sourcify exact_match)
+cat deployments/mezoTestnet.json
+```
+
 ## 6. Requirement → evidence
 
 | Brief requirement | Evidence |

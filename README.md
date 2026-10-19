@@ -69,9 +69,20 @@ milestone:  Pending ──submit──▶ Submitted ──approve─────
 Live demo: build is ready in `frontend/dist` (built with the real escrow address); hosting is pending
 (GitHub Pages workflow in `.github/workflows/pages.yml`, Vercel alternative documented below).
 
-## Test it in ~5 minutes
+## Screenshots
 
-1. **Add Mezo Testnet** to your wallet: RPC `https://rpc.test.mezo.org`, chainId `31611`, symbol `BTC`,
+| My gigs | Create gig |
+|---|---|
+| ![](docs/screens/01-my-gigs.png) | ![](docs/screens/02-create-gig.png) |
+
+| Connect wallet | How to test in 5 min |
+|---|---|
+| ![](docs/screens/03-connect-wallet.png) | ![](docs/screens/04-help.png) |
+
+Run the UI locally in two minutes: `cd frontend && npm ci && npm run dev` (Mezo Testnet is wired in; without
+a WalletConnect project id the app uses injected wallets and the console stays clean).
+
+## Test it in ~5 minutes1. **Add Mezo Testnet** to your wallet: RPC `https://rpc.test.mezo.org`, chainId `31611`, symbol `BTC`,
    explorer `https://explorer.test.mezo.org`.
 2. **Get test BTC** from the faucet: <https://faucet.test.mezo.org>.
 3. **Get test MUSD**: at <https://testnet.mezo.org>, borrow MUSD against your test BTC (minimum 2000 MUSD
