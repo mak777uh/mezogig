@@ -8,3 +8,6 @@ deployments/localhost.json
 typechain-types/
 *.log
 .DS_Store
+frontend/dist/
+_*.log
+
