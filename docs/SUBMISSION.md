@@ -1,7 +1,16 @@
 # SUBMISSION — MezoGig (AKINDO “Build with MUSD and MEZO”)
 
-> Everything needed to judge the project without reading the source first. Placeholders marked
-> `<…>` are filled the moment the testnet deployment lands; the local evidence is already final.
+> Everything needed to judge the project without reading the source first.
+
+## 0. Weight-aligned summary (read this first)
+
+| Score | Our answer in one line | Where |
+|---|---|---|
+| **Mezo Integration 30 %** | MUSD is the settlement asset for the whole gig: deposit, milestone payout, refund, dispute split — contract bound to `0x1189…c503`, permit funding, immutable token. MEZO itself is **not** integrated (allowed: “MUSD and/or MEZO”) and is stated as a roadmap item. | §2, §9.4, deck slides 3–4 |
+| **Product & Business Viability 30 %** | Freelancers deliver first and hope to be paid; clients who pay first carry the opposite risk. MezoGig removes that counterparty risk with milestone escrow in a BTC-backed stablecoin, no platform fee, usable by crypto-native clients and DAOs. | §2, deck slide 7 |
+| **Technical Implementation 20 %** | 69 tests, 100 % statement / 92 % branch coverage, 6 reentrancy attacks rejected, Slither reviewed (0 high/medium), Sourcify `exact_match`; one verification command. | §6, deck slide 6, [`docs/COVERAGE.md`](COVERAGE.md) |
+| **User Experience 10 %** | Three-tab UI (create / my gigs / how to test), role-aware buttons, invite links, live demo on GitHub Pages; a judge completes the loop in ~5 minutes. | §5, §5.1, [`docs/screens/`](screens/) |
+| **Submission Materials 10 %** | README + this file + DEMO + 8-slide deck (`docs/deck.pdf`) + 113-second captioned video (`docs/demo.mp4`). | §1, §3, §9.3 |
 
 ## 1. What is submitted
 
