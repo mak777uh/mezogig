@@ -27,7 +27,7 @@ Compact, copy-pasteable proof for judges. No claims beyond what is linked here.
   contract balance returns to 0 (`docs/DEMO.md`).
 - Lean: **12 headline theorems** across accounting, asset assumptions and permit replay —
   `lake env lean Escrow.lean` → **exit 0, 0 sorry**; latest green run:
-  https://github.com/mak777uh/mezogig/actions/runs/39951559621. Arithmetic model only — not bytecode
+  https://github.com/mak777uh/mezogig/actions/runs/39958207793. Arithmetic model only — not bytecode
   verification.
 
 ## CI
@@ -74,5 +74,6 @@ npm test
 npm run agent -- verify --json
 node mcp/escrow-server.js   # speak JSON-RPC on stdin
 ```
+
 
 

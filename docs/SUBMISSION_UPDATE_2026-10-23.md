@@ -19,7 +19,7 @@ Additive update — the deployed contract is unchanged.
 - CI: `.github/workflows/test.yml` — `npm ci` → compile → `npm test` → coverage; latest green run:
   https://github.com/mak777uh/mezogig/actions/runs/39947340336
 - Lean: `lean/Escrow.lean` — `lake env lean Escrow.lean` → exit 0, **0 sorry**, **12 headline theorems** (accounting, asset assumptions, permit replay); arithmetic model only,
-  not bytecode verification. Workflow: `lean.yml`; latest green run: https://github.com/mak777uh/mezogig/actions/runs/39951559621.
+  not bytecode verification. Workflow: `lean.yml`; latest green run: https://github.com/mak777uh/mezogig/actions/runs/39958207793.
 - Demo video: [`docs/demo_agent.mp4`](demo_agent.mp4) — 72 s, 1920×1080; real MCP session, `verify --json`,
   `npm test`, UI screenshot; generated chiptune soundtrack.
 
@@ -34,6 +34,7 @@ node mcp/escrow-server.js   # speak MCP JSON-RPC on stdin
 **Honest scope:** lifecycle commands were tested as calldata builders only; no transaction was sent from
 this console or the MCP server. The live contract and the existing UI are unchanged. Compact evidence:
 [`evidence.md`](../evidence.md).
+
 
 
 
