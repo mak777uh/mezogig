@@ -53,8 +53,7 @@ There is no direct MUSD faucet in the flow we used. Testnet MUSD is borrowed aga
 - with the **200 MUSD gas deposit**, total debt at opening is **at least 2,000 MUSD**;
 - source: <https://testnet.mezo.org/docs/users/borrow/mint-musd>.
 
-That is why the public escrow at `0x247b…600F` has `gigCount = 0`: our full lifecycle demo runs on a
-**local Hardhat chain** (`npx hardhat node` + `npm run demo:local`). The public-testnet path requires
+That is why the public escrow at `0x247b…600F` has `gigCount = 0`: **the portfolio demo runs on a local\nchain**; the public-testnet path requires borrowing against test BTC. Our full lifecycle runs on a\n**local Hardhat chain** (`npx hardhat node` + `npm run demo:local`). The public-testnet path requires
 borrowing against test BTC and was not funded for this submission. This is a product-demo limitation,
 not a contract limitation.
 
@@ -99,4 +98,5 @@ npm ci
 ESCROW_ADDRESS=0x247b313d0eD3C532B16c7E5f9eA760272361600F node scripts/check-musd.js
 cd lean && lake env lean Escrow.lean   # exit 0, 0 sorry
 ```
+
 
