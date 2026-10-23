@@ -1,5 +1,7 @@
 # MezoGig — milestone escrow for freelance work, settled in MUSD on Mezo
 
+**90 tests · 100% statements · Sourcify exact_match · agent CLI + MCP**
+
 > Hackathon project for **AKINDO “Build with MUSD and MEZO”**.
 > Testnet only. No real money, no platform fee, no admin keys.
 
@@ -8,7 +10,7 @@
 | | |
 |---|---|
 | Contract | `contracts/MezoGigEscrow.sol` — compiled with solc 0.8.28, `evmVersion: london` |
-| Tests | **79 passing** (`npm test`) |
+| Tests | **90 passing** (`npm test`) |
 | Coverage | **100 % statements / 92 % branches / 100 % functions / 100 % lines** (escrow) — [`docs/COVERAGE.md`](docs/COVERAGE.md) |
 | Static analysis | Slither 0.11.6 — 6 findings, all reviewed — [`docs/SLITHER_REPORT.md`](docs/SLITHER_REPORT.md) |
 | Local end-to-end | full lifecycle executed on a local chain, tx list — [`docs/DEMO.md`](docs/DEMO.md) |
@@ -143,6 +145,30 @@ Read-only check against the deployed contract (23.10.2026): chainId `31611`, `mu
 `reviewPeriodSeconds: 148`, `gigCount: 0` (no funded gigs on the public testnet — testnet MUSD requires
 borrowing against test BTC; this is stated in `docs/DEMO.md`).
 
+## MCP server (agent-native)
+
+`mcp/escrow-server.js` is a stdio MCP server (newline-delimited JSON-RPC) for any MCP-capable agent
+(Claude, Cursor, DSH). Tools: `create_gig`, `fund_gig`, `submit_milestone`, `approve_milestone`,
+`open_dispute`, `gig_status`, `list_gigs`. Reads work without a key; writes default to `dry_run=true` and
+only send when `dry_run=false` with a key in `.env` (never printed).
+
+```bash
+node mcp/escrow-server.js
+# -> initialize / tools/list / tools/call over stdin/stdout
+```
+
+```json
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}
+{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}
+{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"create_gig","arguments":{"worker":"0x...","amount":"100","milestones":"2"}}}
+```
+
+## Proof pinning
+
+`scripts/pin-proof.js <file>` computes SHA-256 and a deterministic raw-block CIDv1, and prints an
+`ipfs://` URI for `proofURI`. With `IPFS_API` (e.g. a local Kubo node) it uploads and pins; without it the
+output says `NOT pinned` explicitly.
+
 ## Repository layout
 
 ```
@@ -159,8 +185,12 @@ scripts/
   export-abi.js            # copies the ABI into the frontend
   demo.js                  # end-to-end flow: approve, auto-claim, dispute split, mutual cancel
   agent-console.js         # read-only / dry-run CLI for agents and DAOs (see "Agent console")
+  pin-proof.js             # SHA-256 + deterministic raw CID; optional Kubo pin
+mcp/
+  escrow-server.js         # stdio MCP server: create/fund/submit/approve/dispute/status/list
 frontend/                  # Vite + React + wagmi/viem + RainbowKit, Mezo Testnet wired in
 deployments/               # deploy receipts
+evidence.md                # compact judge evidence: addresses, tx, tests, commands
 docs/
   SECURITY.md              # threat model, invariants, limitations
   TESTING.md               # what the tests cover and why
@@ -174,7 +204,7 @@ docs/
 ```bash
 npm install
 npm run compile
-npm test          # 79 passing (69 contract + 10 agent-console)
+npm test          # 90 passing (69 contract + 10 CLI + 8 MCP + 3 pin-proof)
 npm run coverage  # 100 % stmts / 92 % branch / 100 % funcs (escrow)
 ```
 

@@ -16,6 +16,8 @@
     "finalize": "node scripts/finalize.js",
     "check:musd": "node scripts/check-musd.js",
     "agent": "node scripts/agent-console.js",
+    "mcp": "node mcp/escrow-server.js",
+    "pin:proof": "node scripts/pin-proof.js",
     "test:agent": "hardhat test test/AgentConsole.test.js",
     "postdeploy": "powershell -ExecutionPolicy Bypass -File scripts/postdeploy.ps1",
     "verify:sourcify": "node scripts/verify-sourcify.js"

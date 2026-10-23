@@ -115,7 +115,7 @@ box(s, Inches(6.7), Inches(5.3), Inches(5.9), Inches(1.35), fill=PANEL, line=RGB
 text(s, Inches(6.95), Inches(5.45), Inches(5.5), Inches(1.1), [
     ("Contract (Mezo Testnet)", 11, MUTED, True),
     ("0x247b313d0eD3C532B16c7E5f9eA760272361600F", 12, TEXT, True),
-    ("Sourcify exact_match · 79 tests · no owner, no fee", 11, MUTED, False),
+    ("Sourcify exact_match · 90 tests · no owner, no fee", 11, MUTED, False),
 ])
 footer(s, 1)
 
@@ -214,7 +214,7 @@ footer(s, 5)
 s = slide()
 header(s, "Technical (20 %)", "Small contract, boring security, checkable evidence")
 left = [
-    ("79 tests", "lifecycle, guards, terminal states, fuzz invariants"),
+    ("90 tests", "lifecycle, guards, terminal states, fuzz invariants"),
     ("100 % / 92 %", "statements / branches of the escrow contract"),
     ("6 attacks", "malicious ERC-20 reentrancy attempts, all rejected"),
     ("6 Slither findings", "every one dispositioned, no high/medium"),
@@ -233,7 +233,7 @@ text(s, Inches(7.1), Inches(2.28), Inches(5.3), Inches(2.3), [
     ("  node scripts/check-musd.js", 10, TEXT, False),
     ("→ musd(), reviewPeriod()=148, gigCount()=0", 10, ACCENT, False),
     ("", 4, TEXT, False),
-    ("npm test        # 79 passing", 10, TEXT, False),
+    ("npm test        # 90 passing", 10, TEXT, False),
     ("npm run coverage", 10, TEXT, False),
     ("npm run verify:sourcify", 10, TEXT, False),
 ])
@@ -316,10 +316,11 @@ text(s, Inches(0.95), Inches(2.35), Inches(5.4), Inches(3.8), [
     ("Machine-readable CLI", 16, ACCENT, True),
     ("scripts/agent-console.js — no UI, no keys printed", 11, MUTED, False),
     ("", 5, TEXT, False),
-    ("status · jobs list · job get · watch · verify", 12, TEXT, False, "bullet"),
+    ("CLI: status / jobs list / job get / watch / verify", 11, TEXT, False, "bullet"),
+    ("MCP: create_gig / fund_gig / submit / approve / dispute / status", 11, TEXT, False, "bullet"),
     ("lifecycle commands build calldata; --dry-run is the default", 12, TEXT, False, "bullet"),
     ("exit codes 0/1/2/3 = ok / input / network / revert", 12, TEXT, False, "bullet"),
-    ("10 new tests; npm test = 79 passing", 12, TEXT, False, "bullet"),
+    ("21 new tests (CLI + MCP + pin); npm test = 90 passing", 12, TEXT, False, "bullet"),
     ("commit fbf6fb8; contract unchanged", 12, TEXT, False, "bullet"),
     ("", 5, TEXT, False),
     ("Read-only calls checked against the deployed contract; no transaction sent.", 10, MUTED, False),
@@ -336,11 +337,12 @@ text(s, Inches(7.1), Inches(2.3), Inches(5.3), Inches(3.8), [
     ('  "ok": true', 10, TEXT, False),
     ("}", 10, TEXT, False),
     ("$ npm test", 10, ACCENT, True),
-    ("79 passing", 11, ACCENT, True),
+    ("90 passing", 11, ACCENT, True),
 ], space=3)
 footer(s, 9)
 
 out_pptx = os.path.join(ROOT, "docs", "deck.pptx")
 prs.save(out_pptx)
 print("saved", out_pptx, os.path.getsize(out_pptx), "bytes")
+
 

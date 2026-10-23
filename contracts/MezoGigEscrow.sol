@@ -207,7 +207,7 @@ contract MezoGigEscrow is ReentrancyGuard {
         m.status = MilestoneStatus.Paid;
         gig.paidOut += uint128(amount);
         _settleIfComplete(gig);
-        musd.safeTransfer(gig.freelancer, amount);
+        _payout(gigId, gig.freelancer, amount);
         emit MilestoneApproved(gigId, index, amount, gig.freelancer);
     }
 
@@ -224,7 +224,7 @@ contract MezoGigEscrow is ReentrancyGuard {
         m.status = MilestoneStatus.Paid;
         gig.paidOut += uint128(amount);
         _settleIfComplete(gig);
-        musd.safeTransfer(gig.freelancer, amount);
+        _payout(gigId, gig.freelancer, amount);
         emit MilestoneClaimed(gigId, index, amount, gig.freelancer);
     }
 
@@ -240,7 +240,7 @@ contract MezoGigEscrow is ReentrancyGuard {
         m.status = MilestoneStatus.Refunded;
         gig.refunded += uint128(amount);
         _settleIfComplete(gig);
-        musd.safeTransfer(gig.client, amount);
+        _payout(gigId, gig.client, amount);
         emit MilestoneRefunded(gigId, index, amount, gig.client);
     }
 
@@ -279,8 +279,8 @@ contract MezoGigEscrow is ReentrancyGuard {
         gig.paidOut += uint128(toFreelancer);
         gig.refunded += uint128(toClient);
         _settleIfComplete(gig);
-        if (toFreelancer != 0) musd.safeTransfer(gig.freelancer, toFreelancer);
-        if (toClient != 0) musd.safeTransfer(gig.client, toClient);
+        if (toFreelancer != 0) _payout(gigId, gig.freelancer, toFreelancer);
+        if (toClient != 0) _payout(gigId, gig.client, toClient);
         emit DisputeResolved(gigId, index, freelancerBps, toFreelancer, toClient);
     }
 
@@ -321,7 +321,7 @@ contract MezoGigEscrow is ReentrancyGuard {
         gig.cancelProposer = address(0);
         gig.refunded += uint128(refund);
         gig.status = GigStatus.Cancelled;
-        musd.safeTransfer(gig.client, refund);
+        _payout(gigId, gig.client, refund);
         emit GigCancelled(gigId, refund);
     }
 
@@ -380,7 +380,7 @@ contract MezoGigEscrow is ReentrancyGuard {
     }
 
     /// @notice Amount still held by the contract for this gig (not yet paid or refunded).
-    function lockedAmount(uint256 gigId) external view returns (uint256 locked) {
+    function lockedAmount(uint256 gigId) public view virtual returns (uint256 locked) {
         Gig storage gig = _gig(gigId);
         uint256 len = gig.milestones.length;
         for (uint256 i = 0; i < len; ++i) {
@@ -461,8 +461,20 @@ contract MezoGigEscrow is ReentrancyGuard {
                 })
             );
         }
-        musd.safeTransferFrom(msg.sender, address(this), total);
+        _pullFunding(gigId, msg.sender, total);
         emit GigCreated(gigId, msg.sender, freelancer, arbiter, total, amounts.length, metadataURI);
+    }
+
+    /// @dev Funding hook. The base escrow transfers MUSD directly; the yield
+    ///      variant overrides this to deposit into the MUSD Savings Vault.
+    function _pullFunding(uint256, address from, uint256 total) internal virtual {
+        musd.safeTransferFrom(from, address(this), total);
+    }
+
+    /// @dev Payout hook. The base escrow transfers MUSD directly; the yield
+    ///      variant overrides this to withdraw from the vault first.
+    function _payout(uint256, address to, uint256 amount) internal virtual {
+        musd.safeTransfer(to, amount);
     }
 
     function _settleIfComplete(Gig storage gig) private {
@@ -489,3 +501,4 @@ interface IERC20PermitLike {
     function permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s)
         external;
 }
+

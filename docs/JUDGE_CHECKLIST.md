@@ -50,9 +50,9 @@ The AKINDO brief names three criteria: **it works as described**, **anyone can t
 
 - One contract, ~490 lines, 8 user-facing actions, 11 events, custom errors, no dependencies beyond
   OpenZeppelin.
-- 79 tests (69 contract + 10 Agent Console), 100 % statement / 100 % function / 100 % line coverage of the escrow, 92 % branches.
+- 90 tests (69 contract + 10 Agent Console + 8 MCP + 3 pin-proof), 100 % statement / 100 % function / 100 % line coverage of the escrow, 92 % branches.
 - Frontend: three tabs, no wallet needed to read, one-click faucet/MUSD links, invite links, role-aware UI.
-- Agent Console (23.10): `npm run agent -- verify --json` is a **no-wallet** check (chainId 31611, musdMatches true, reviewPeriod 148, gigCount 0); `status --json`, `jobs list`, `job get`, `watch` are read-only; lifecycle commands are `--dry-run` calldata builders by default. 10 tests.
+- Agent Console (23.10): `npm run agent -- verify --json` is a **no-wallet** check (chainId 31611, musdMatches true, reviewPeriod 148, gigCount 0); `status --json`, `jobs list`, `job get`, `watch` are read-only; lifecycle commands are `--dry-run` calldata builders by default. MCP: `node mcp/escrow-server.js` exposes `create_gig`, `fund_gig`, `submit_milestone`, `approve_milestone`, `open_dispute`, `gig_status`, `list_gigs`; writes default to `dry_run=true`. Pin: `node scripts/pin-proof.js <file>`. 8 MCP + 3 pin tests.
 - Docs: README (problem → solution → state machine → 5-minute test → security), SECURITY, TESTING,
   COVERAGE, SLITHER_REPORT, DEMO, SUBMISSION_UPDATE_2026-10-23.
 
@@ -61,3 +61,4 @@ The AKINDO brief names three criteria: **it works as described**, **anyone can t
 1. **Full lifecycle on the public testnet still needs MUSD.** Testnet MUSD requires borrowing against test BTC (minimum 2000 MUSD debt), so the public contract has `gigCount = 0` and the full loop is demonstrated on a local chain (`docs/DEMO.md`). Decision: keep this honest local demo + read-only CLI path, or fund a public gig (requires test BTC/MUSD; not done).
 2. **Video is still the 19.10 version.** The deck now has 9 slides and includes the Agent Console; the 113-second video does not show it. Decision: keep as is (deck covers it) or re-record.
 3. **AKINDO submission record** `VwpAxg884FA2Mw6E` still contains the 19.10 comment; the 23.10 delta is in `docs/SUBMISSION_UPDATE_2026-10-23.md` and was posted as a wave comment. The owner updates the record via the AKINDO UI.
+

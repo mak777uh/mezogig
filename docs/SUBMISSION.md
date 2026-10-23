@@ -8,11 +8,11 @@
 |---|---|---|
 | **Mezo Integration 30 %** | MUSD is the settlement asset for the whole gig: deposit, milestone payout, refund, dispute split — contract bound to `0x1189…c503`, permit funding, immutable token. MEZO itself is **not** integrated (allowed: “MUSD and/or MEZO”) and is stated as a roadmap item. | §2, §9.4, deck slides 3–4 |
 | **Product & Business Viability 30 %** | Freelancers deliver first and hope to be paid; clients who pay first carry the opposite risk. MezoGig removes that counterparty risk with milestone escrow in a BTC-backed stablecoin, no platform fee, usable by crypto-native clients and DAOs. | §2, deck slide 7 |
-| **Technical Implementation 20 %** | 79 tests, 100 % statement / 92 % branch coverage, 6 reentrancy attacks rejected, Slither reviewed (0 high/medium), Sourcify `exact_match`, read-only Agent Console CLI; one verification command. | §6, deck slide 6, [`docs/COVERAGE.md`](COVERAGE.md) |
+| **Technical Implementation 20 %** | 90 tests, 100 % statement / 92 % branch coverage, 6 reentrancy attacks rejected, Slither reviewed (0 high/medium), Sourcify `exact_match`, read-only Agent Console CLI + MCP server; one verification command. | §6, deck slide 6, [`docs/COVERAGE.md`](COVERAGE.md) |
 | **User Experience 10 %** | Three-tab UI (create / my gigs / how to test), role-aware buttons, invite links, live demo on GitHub Pages; a judge completes the loop in ~5 minutes. | §5, §5.1, [`docs/screens/`](screens/) |
 | **Submission Materials 10 %** | README + this file + DEMO + 9-slide deck (`docs/deck.pdf`) + 113-second captioned video (`docs/demo.mp4`). | §1, §3, §9.3 |
 
-> **Update 23 Oct 2026:** Agent Console added (read-only/dry-run CLI, 10 new tests, total 79 passing,
+> **Update 23 Oct 2026:** Agent Console + MCP server added (21 new tests, total 90 passing,
 > commit `fbf6fb8`). The deployed contract is unchanged. Full delta: [`SUBMISSION_UPDATE_2026-10-23.md`](SUBMISSION_UPDATE_2026-10-23.md).
 
 ## 1. What is submitted
@@ -33,6 +33,7 @@
 | Deck | [`docs/deck.pdf`](deck.pdf) — **9 slides** (8 original + Agent Console), weight-aligned |
 | Pitch video | [`docs/demo.mp4`](demo.mp4) — 113 s, captioned, screen-only |
 | Agent console (23.10) | [`scripts/agent-console.js`](scripts/agent-console.js) — read-only / dry-run CLI: `status`, `jobs list`, `job get`, `watch`, `verify`; lifecycle calldata builders. 10 tests. |
+| MCP server (23.10) | [`mcp/escrow-server.js`](mcp/escrow-server.js) — stdio JSON-RPC tools `create_gig`, `fund_gig`, `submit_milestone`, `approve_milestone`, `open_dispute`, `gig_status`, `list_gigs`; dry-run by default. 8 tests. Proof pinning: `scripts/pin-proof.js` (3 tests). |
 
 ## 2. What it does (one paragraph)
 
@@ -183,7 +184,7 @@ escrow:   0x247b313d0eD3C532B16c7E5f9eA760272361600F
 ```
 
 ```bash
-# 2) the test suite and coverage (79 tests, no network needed)
+# 2) the test suite and coverage (90 tests, no network needed)
 npm ci && npm test
 npm run coverage
 
@@ -215,6 +216,25 @@ only, so a judge or an agent can inspect them without a key.
 Honest scope: the read-only `verify`/`status` calls were run against the deployed testnet contract on
 23.10.2026 (`chainId 31611`, `musdMatches: true`, `reviewPeriodSeconds: 148`, `gigCount: 0`). Lifecycle
 commands were tested as pure calldata builders only; no transaction was sent from this console.
+
+## 5.4 MCP server — agent-native escrow (added 23.10)
+
+`mcp/escrow-server.js` speaks MCP over stdio (newline-delimited JSON-RPC). Tools: `create_gig`, `fund_gig`,
+`submit_milestone`, `approve_milestone`, `open_dispute`, `gig_status`, `list_gigs`. Reads need no key;
+writes default to `dry_run=true` and only send when `dry_run=false` with a key in `.env` (never printed).
+
+```bash
+node mcp/escrow-server.js
+# stdin: {"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}
+# stdin: {"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}
+# stdin: {"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"list_gigs","arguments":{}}}
+```
+
+Proof pinning: `scripts/pin-proof.js <file>` computes SHA-256 and a deterministic raw-block CIDv1 and
+prints `ipfs://<cid>` for `proofURI`; with `IPFS_API` it pins, otherwise it explicitly says `NOT pinned`.
+
+Honest scope: the MCP server is tested for protocol/tool schemas and dry-run calldata only; no MCP write
+was sent to the public testnet.
 
 ## 6. Requirement → evidence
 
@@ -259,7 +279,7 @@ commands were tested as pure calldata builders only; no transaction was sent fro
 ```
 contracts/MezoGigEscrow.sol   the escrow (one contract, ~490 lines)
 contracts/mocks/              MockMUSD + ReentrantMUSD (tests only, never deployed)
-test/                         79 tests: lifecycle, guards, reentrancy, fuzz invariants, agent console
+test/                         90 tests: lifecycle, guards, reentrancy, fuzz invariants, agent console, MCP, pin-proof
 frontend/                     Vite + React + wagmi/viem + RainbowKit (Mezo Testnet wired in)
 scripts/                      deploy, demo, fork-demo, export-abi, verify-args.sh
 docs/                         SECURITY, TESTING, COVERAGE, SLITHER_REPORT, DEMO, JUDGE_CHECKLIST, SUBMISSION
@@ -326,7 +346,7 @@ level, focus area, product status, location, post-hackathon intent); accept the 
 | TL;DR (one sentence) | MezoGig is milestone escrow for freelance work: the client locks the whole budget in MUSD, each milestone is released on delivery, and a disputed milestone is split by an arbiter. |
 | How it works (problem, function, MUSD/MEZO position) | Freelancers who deliver first risk not being paid; clients who pay first risk losing the money. MezoGig holds the entire gig budget in an escrow contract and releases it milestone by milestone: the freelancer submits with a proof link, the client approves, and after a review period the freelancer can claim automatically; undelivered milestones are refunded after their deadline; either party can open a dispute and the arbiter splits that milestone; both parties can cancel by mutual signature. MUSD is the settlement asset — a BTC-backed stablecoin removes the volatility problem that makes crypto payments unusable for real work, and EIP-2612 permit lets the client fund a gig in one transaction. (MEZO is not required by the contract; a future version can use it for fee discounts.) |
 | Target group | Freelancers and small agencies working for crypto-native clients in the Bitcoin/Mezo economy, plus DAOs outsourcing bounded tasks; desktop first; any region where a stable USD unit matters. |
-| Tech stack | Solidity 0.8.28 (OpenZeppelin 5, SafeERC20, ReentrancyGuard, EIP-2612), Hardhat, 69 tests (fuzz invariants + reentrancy attacks), Slither; Vite + React + wagmi/viem + RainbowKit; Mezo testnet chainId 31611, MUSD `0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503`. |
+| Tech stack | Solidity 0.8.28 (OpenZeppelin 5, SafeERC20, ReentrancyGuard, EIP-2612), Hardhat, 90 tests (69 contract + 21 agent/MCP/pin), Slither; Vite + React + wagmi/viem + RainbowKit; Mezo testnet chainId 31611, MUSD `0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503`. |
 | Track | **Track 2 — Access & Distribution** (MUSD as a payment rail for work); optionally “both”. |
 | Chain deployed on | Mezo testnet (chainId 31611) |
 | Project status | Entirely new — built during Wave 1. |
@@ -355,7 +375,7 @@ level, focus area, product status, location, post-hackathon intent); accept the 
 
 Pattern: the field is crowded with **alerts and simple payment links**, thin on escrow/arbitration. Our edge:
 **Mezo Integration 30 %** (MUSD settlement, permit funding, immutable token, verified contract),
-**Product 30 %** (real freelance market, counterparty risk, no platform fee), **Technical 20 %** (69 tests,
+**Product 30 %** (real freelance market, counterparty risk, no platform fee), **Technical 20 %** (90 tests,
 fuzz invariants, reentrancy attacks, Slither). Materials (10 % + screening gate) are the part to finish.
 
 ### 9.6 Open decisions (for the operator)
@@ -456,5 +476,7 @@ roadmap (fee discounts / staking for arbiters).” Do not claim MEZO usage.
 
 No minimum-point threshold is published on the page. Practically this means: a strong score earns a
 proportional share; the only hard gates are the screening requirements (integration, deployment, materials).
+
+
 
 
