@@ -71,3 +71,4 @@ npm run agent -- verify --json
 node mcp/escrow-server.js   # speak JSON-RPC on stdin
 ```
 
+

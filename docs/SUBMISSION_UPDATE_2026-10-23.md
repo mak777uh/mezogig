@@ -32,3 +32,4 @@ node mcp/escrow-server.js   # speak MCP JSON-RPC on stdin
 **Honest scope:** lifecycle commands were tested as calldata builders only; no transaction was sent from
 this console or the MCP server. The live contract and the existing UI are unchanged. Compact evidence:
 [`evidence.md`](../evidence.md).
+
