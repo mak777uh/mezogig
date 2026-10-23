@@ -7,10 +7,10 @@
 | Score | Our answer in one line | Where |
 |---|---|---|
 | **Mezo Integration 30 %** | MUSD is the settlement asset for the whole gig: deposit, milestone payout, refund, dispute split — contract bound to `0x1189…c503`, permit funding, immutable token. MEZO itself is **not** integrated (allowed: “MUSD and/or MEZO”) and is stated as a roadmap item. | §2, §9.4, deck slides 3–4 |
-| **Product & Business Viability 30 %** | Freelancers deliver first and hope to be paid; clients who pay first carry the opposite risk. MezoGig removes that counterparty risk with milestone escrow in a BTC-backed stablecoin, no platform fee, usable by crypto-native clients and DAOs. | §2, deck slide 7 |
+| **Product & Business Viability 30 %** | MUSD as the **settlement rail for work between humans and agents**: clients pay a BTC-backed stablecoin, agents/freelancers avoid BTC volatility, and milestone escrow removes counterparty risk for both sides. No platform fee; usable by crypto-native clients and DAOs. | §2, deck slide 7 |
 | **Technical Implementation 20 %** | 90 tests, 100 % statement / 92 % branch coverage, 6 reentrancy attacks rejected, Slither reviewed (0 high/medium), Sourcify `exact_match`, read-only Agent Console CLI + MCP server; one verification command. | §6, deck slide 6, [`docs/COVERAGE.md`](COVERAGE.md) |
 | **User Experience 10 %** | Three-tab UI (create / my gigs / how to test), role-aware buttons, invite links, live demo on GitHub Pages; a judge completes the loop in ~5 minutes. | §5, §5.1, [`docs/screens/`](screens/) |
-| **Submission Materials 10 %** | README + this file + DEMO + 9-slide deck (`docs/deck.pdf`) + 113-second captioned video (`docs/demo.mp4`). | §1, §3, §9.3 |
+| **Submission Materials 10 %** | README + this file + DEMO + **10-slide deck** (`docs/deck.pdf`) + 113-second captioned video (`docs/demo.mp4`) + 72-second agent demo (`docs/demo_agent.mp4`). | §1, §3, §9.3 |
 
 > **Update 23 Oct 2026:** Agent Console + MCP server added (21 new tests, total 90 passing,
 > commit `fbf6fb8`). The deployed contract is unchanged. Full delta: [`SUBMISSION_UPDATE_2026-10-23.md`](SUBMISSION_UPDATE_2026-10-23.md).
@@ -37,13 +37,15 @@
 
 ## 2. What it does (one paragraph)
 
-The client deposits the **entire gig budget up-front** in MUSD. Each milestone has an amount and a deadline.
-The freelancer submits a milestone with a proof link; the client approves and the milestone amount is paid
-immediately. If the client stays silent for the review period, the freelancer claims automatically. If a
-milestone is not submitted before its deadline, the client refunds it. Either party can open a dispute; the
-arbiter chosen at gig creation splits that milestone by basis points. Both parties can cancel by mutual
-signature, and the remaining funds go back to the client. There is no owner, no platform fee, no
-upgradeability, and no way to withdraw funds outside these paths.
+**MUSD is the settlement rail for work between humans and agents.** The client deposits the **entire gig
+budget up-front** in MUSD. Each milestone has an amount and a deadline. The freelancer/agent submits a
+milestone with a proof link; the client approves and the milestone amount is paid immediately. If the
+client stays silent for the review period, the freelancer claims automatically. If a milestone is not
+submitted before its deadline, the client refunds it. Either party can open a dispute; the arbiter chosen at
+gig creation splits that milestone by basis points. Both parties can cancel by mutual signature, and the
+remaining funds go back to the client. There is no owner, no platform fee, no upgradeability, and no way to
+withdraw funds outside these paths. The same escrow is drivable from the UI, the CLI and an MCP-capable
+agent; autonomous sending is **planned**, while current agent tooling is read-only/dry-run by default.
 
 ## 3. Transaction evidence
 
@@ -281,8 +283,11 @@ contracts/MezoGigEscrow.sol   the escrow (one contract, ~490 lines)
 contracts/mocks/              MockMUSD + ReentrantMUSD (tests only, never deployed)
 test/                         90 tests: lifecycle, guards, reentrancy, fuzz invariants, agent console, MCP, pin-proof
 frontend/                     Vite + React + wagmi/viem + RainbowKit (Mezo Testnet wired in)
-scripts/                      deploy, demo, fork-demo, export-abi, verify-args.sh
-docs/                         SECURITY, TESTING, COVERAGE, SLITHER_REPORT, DEMO, JUDGE_CHECKLIST, SUBMISSION
+scripts/                      deploy, demo, agent-console, pin-proof, export-abi, verify-args
+mcp/                          stdio MCP server for the escrow
+lean/                         Lean 4 accounting model (12 headline theorems)
+docs/                         SECURITY, TESTING, COVERAGE, SLITHER_REPORT, DEMO, JUDGE_CHECKLIST, SUBMISSION,
+                              MUSD_INTEGRATION_NOTES, ECOSYSTEM, FEEDBACK_TO_MEZO
 deployments/                  deploy receipt (address, tx hash, review period)
 ```
 

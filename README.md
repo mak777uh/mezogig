@@ -1,4 +1,4 @@
-# MezoGig — milestone escrow for freelance work, settled in MUSD on Mezo
+# MezoGig — MUSD as the settlement rail for work between humans and agents
 
 [![test](https://github.com/mak777uh/mezogig/actions/workflows/test.yml/badge.svg)](https://github.com/mak777uh/mezogig/actions/workflows/test.yml)
 [![Sourcify exact_match](https://img.shields.io/badge/Sourcify-exact__match-00d68f)](https://repo.sourcify.dev/contracts/full_match/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F/)
@@ -6,8 +6,14 @@
 
 **90 tests · 100% statements · Sourcify exact_match · Lean 4 · 0 sorry · 12 theorems · agent CLI + MCP**
 
-> Hackathon project for **AKINDO “Build with MUSD and MEZO”**.
-> Testnet only. No real money, no platform fee, no admin keys.
+> **MUSD as the settlement rail for work between humans and agents.**
+> The client locks the gig budget in MUSD. Each milestone releases on delivery; a silent client cannot
+> block payment forever, and a disputed milestone is split by an arbiter. The same escrow is operable
+> from the UI, the CLI, and an MCP-capable agent.
+>
+> Built for the **AKINDO “Build with MUSD and MEZO”** wave. Testnet only, no real money, no platform fee,
+> no admin keys. Agent surfaces are read-only/dry-run by default; autonomous sending requires the role
+> key and is **planned**, not claimed as shipped.
 
 **Status**
 
@@ -173,6 +179,13 @@ node mcp/escrow-server.js
 `scripts/pin-proof.js <file>` computes SHA-256 and a deterministic raw-block CIDv1, and prints an
 `ipfs://` URI for `proofURI`. With `IPFS_API` (e.g. a local Kubo node) it uploads and pins; without it the
 output says `NOT pinned` explicitly.
+
+## Ecosystem notes (MIT, reusable)
+
+- [MUSD integration notes](docs/MUSD_INTEGRATION_NOTES.md) — asset assumptions, permit, testnet MUSD path,
+  missing vault, friction list.
+- [Reusing this package](docs/ECOSYSTEM.md) — Lean spec template, MCP server and CLI as patterns.
+- [Feedback to Mezo](docs/FEEDBACK_TO_MEZO.md) — concrete docs/testnet/ABI friction from this build.
 
 ## Repository layout
 
