@@ -60,6 +60,29 @@ The three detector classes that matter for this contract — `reentrancy-eth`, `
 `unprotected-upgrade` — do not apply: there is no ETH in the contract, no arbitrary `transferFrom`, and the
 contract is not upgradeable.
 
+## Machine-checked invariants (Lean 4)
+
+`lean/Escrow.lean` is a small **arithmetic model** of the escrow accounting. It is **not** a verification of
+the Solidity bytecode, storage layout, token behaviour or the per-milestone status machine. The model is
+checked in CI by [`lean.yml`](../.github/workflows/lean.yml) on the pinned toolchain in `lean/lean-toolchain`.
+
+```bash
+cd lean
+lake env lean Escrow.lean   # exit 0, no output, 0 sorry
+```
+
+| # | Invariant | Theorem |
+|---|---|---|
+| 1 | no money creation: `paidOut + refunded ≤ funded` in every reachable state | `MezoGig.no_money_creation` |
+| 2 | budget completeness: `milestones.sum = funded` | `MezoGig.budget_complete` |
+| 3 | dispute exactness: `a + b = amount` for the arbiter split | `MezoGig.dispute_split_correct` |
+| 4 | floor rounding never creates money: `Σ (total / n) ≤ total` | `MezoGig.floor_split_no_gain` |
+
+Supporting results: `MezoGig.inv_of_reachable` (all transitions preserve the invariant) and
+`MezoGig.resolve_preserves_budget`. The model is non-vacuous: `MezoGig.ceil_split_breaks` proves that naive
+ceiling rounding does break invariant 4. Out of scope: `uint128` overflow, addresses/tokens, and weighted
+splits (the floor lemma is stated for equal splits). This is **model checking, not bytecode verification**.
+
 ## Known limitations (honest list)
 
 1. **Centralised arbiter.** The arbiter is chosen by the client at creation and is trusted to split fairly;

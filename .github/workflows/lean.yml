@@ -1,0 +1,47 @@
+name: lean
+
+on:
+  push:
+    paths:
+      - "lean/**"
+      - ".github/workflows/lean.yml"
+  pull_request:
+    paths:
+      - "lean/**"
+      - ".github/workflows/lean.yml"
+
+jobs:
+  model:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lean
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan and Lake build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.elan
+            lean/.lake
+          key: lean-${{ runner.os }}-${{ hashFiles('lean/lean-toolchain', 'lean/lake-manifest.json') }}
+          restore-keys: |
+            lean-${{ runner.os }}-
+
+      - name: Install elan
+        shell: bash
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Compile the accounting model
+        shell: bash
+        run: |
+          lake --version
+          lake env lean Escrow.lean
+          if grep -nE '\b(sorry|admit)\b' Escrow.lean; then
+            echo "found sorry/admit in Escrow.lean" >&2
+            exit 1
+          fi
+

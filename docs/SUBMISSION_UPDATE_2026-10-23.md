@@ -17,7 +17,9 @@ Additive update — the deployed contract is unchanged.
   `reviewPeriodSeconds: 148`, `gigCount: 0`.
 - Commit: https://github.com/mak777uh/mezogig/commit/fbf6fb8
 - CI: `.github/workflows/test.yml` — `npm ci` → compile → `npm test` → coverage; latest green run:
-  https://github.com/mak777uh/mezogig/actions/runs/39945778835
+  https://github.com/mak777uh/mezogig/actions/runs/39947340336
+- Lean: `lean/Escrow.lean` — `lake env lean Escrow.lean` → exit 0, **0 sorry**; arithmetic model only,
+  not bytecode verification. Workflow: `.github/workflows/lean.yml`.
 - Demo video: [`docs/demo_agent.mp4`](demo_agent.mp4) — 72 s, 1920×1080; real MCP session, `verify --json`,
   `npm test`, UI screenshot; generated chiptune soundtrack.
 

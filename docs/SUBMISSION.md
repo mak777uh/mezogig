@@ -30,7 +30,7 @@
 | MUSD token | [`0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503`](https://explorer.test.mezo.org/address/0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503) (18 dec, EIP-2612) |
 | Review period | **148 s** (short on purpose: the auto-claim path must be testable in minutes) |
 | Live demo | **<https://mak777uh.github.io/mezogig/>** (GitHub Pages; Mezo Testnet wired in) |
-| Deck | [`docs/deck.pdf`](deck.pdf) — **9 slides** (8 original + Agent Console), weight-aligned |
+| Deck | [`docs/deck.pdf`](deck.pdf) — **10 slides** (8 original + Agent Console + Lean model), weight-aligned |
 | Pitch video | [`docs/demo.mp4`](demo.mp4) — 113 s, captioned, screen-only |
 | Agent console (23.10) | [`scripts/agent-console.js`](scripts/agent-console.js) — read-only / dry-run CLI: `status`, `jobs list`, `job get`, `watch`, `verify`; lifecycle calldata builders. 10 tests. |
 | MCP server (23.10) | [`mcp/escrow-server.js`](mcp/escrow-server.js) — stdio JSON-RPC tools `create_gig`, `fund_gig`, `submit_milestone`, `approve_milestone`, `open_dispute`, `gig_status`, `list_gigs`; dry-run by default. 8 tests. Proof pinning: `scripts/pin-proof.js` (3 tests). |

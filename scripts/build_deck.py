@@ -89,7 +89,7 @@ def header(s, kicker, title):
 def footer(s, n):
     text(s, Inches(0.7), Inches(7.0), Inches(9), Inches(0.3),
          [("MezoGig · milestone escrow in MUSD on Mezo · AKINDO “Build with MUSD and MEZO”, Wave 1", 10, MUTED, False)])
-    text(s, Inches(11.8), Inches(7.0), Inches(0.9), Inches(0.3), [(f"{n}/9", 10, MUTED, False)], align=PP_ALIGN.RIGHT)
+    text(s, Inches(11.8), Inches(7.0), Inches(0.9), Inches(0.3), [(f"{n}/10", 10, MUTED, False)], align=PP_ALIGN.RIGHT)
 
 
 # 1 — title -----------------------------------------------------------------
@@ -341,6 +341,41 @@ text(s, Inches(7.1), Inches(2.3), Inches(5.3), Inches(3.8), [
     ("90 passing", 11, ACCENT, True),
 ], space=3)
 footer(s, 9)
+
+# 10 — formal model ---------------------------------------------------------
+s = slide()
+header(s, "Formal accounting · Lean 4", "Machine-checked invariants, honest scope")
+box(s, Inches(0.7), Inches(2.1), Inches(7.3), Inches(4.55), fill=PANEL, line=RGBColor(0x1D, 0x4A, 0x33))
+text(s, Inches(0.95), Inches(2.28), Inches(6.8), Inches(4.2), [
+    ("Pinned Lean 4.30.0 · 0 sorry", 14, ACCENT, True),
+    ("An arithmetic model of the ledger, not a verification of Solidity bytecode.", 10, MUTED, False),
+    ("", 4, TEXT, False),
+    ("No money creation", 13, TEXT, True),
+    ("paidOut + refunded ≤ funded", 11, TEXT, False),
+    ("MezoGig.no_money_creation", 10, MUTED, False),
+    ("", 3, TEXT, False),
+    ("Budget completeness", 13, TEXT, True),
+    ("milestones.sum = funded", 11, TEXT, False),
+    ("MezoGig.budget_complete", 10, MUTED, False),
+    ("", 3, TEXT, False),
+    ("Dispute exactness", 13, TEXT, True),
+    ("a + b = amount", 11, TEXT, False),
+    ("MezoGig.dispute_split_correct", 10, MUTED, False),
+    ("", 3, TEXT, False),
+    ("Floor rounding never creates money", 13, TEXT, True),
+    ("Σ (total / n) ≤ total", 11, TEXT, False),
+    ("MezoGig.floor_split_no_gain", 10, MUTED, False),
+], space=2)
+lean_shot = os.path.join(SCREENS, "lean_compile.png")
+if os.path.exists(lean_shot):
+    s.shapes.add_picture(lean_shot, Inches(8.2), Inches(2.1), width=Inches(4.4))
+text(s, Inches(8.2), Inches(4.9), Inches(4.4), Inches(1.4), [
+    ("lake env lean Escrow.lean → exit 0", 10, TEXT, True),
+    ("CI: .github/workflows/lean.yml · 0 sorry", 9, MUTED, False),
+    ("", 4, TEXT, False),
+    ("Scope: arithmetic model only; uint128 overflow, tokens and weighted splits are out of scope.", 9, WARN, False),
+])
+footer(s, 10)
 
 out_pptx = os.path.join(ROOT, "docs", "deck.pptx")
 prs.save(out_pptx)
