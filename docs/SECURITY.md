@@ -62,26 +62,59 @@ contract is not upgradeable.
 
 ## Machine-checked invariants (Lean 4)
 
-`lean/Escrow.lean` is a small **arithmetic model** of the escrow accounting. It is **not** a verification of
-the Solidity bytecode, storage layout, token behaviour or the per-milestone status machine. The model is
-checked in CI by [`lean.yml`](../.github/workflows/lean.yml) on the pinned toolchain in `lean/lean-toolchain`.
+`lean/Escrow.lean` is an **arithmetic/state-machine model** of the escrow accounting. It is **not** a
+verification of the Solidity bytecode, storage layout, token implementation or time/deadline logic. The
+model is checked in CI by [`lean.yml`](../.github/workflows/lean.yml) on the pinned toolchain in
+`lean/lean-toolchain`.
 
 ```bash
 cd lean
 lake env lean Escrow.lean   # exit 0, no output, 0 sorry
 ```
 
-| # | Invariant | Theorem |
-|---|---|---|
-| 1 | no money creation: `paidOut + refunded ≤ funded` in every reachable state | `MezoGig.no_money_creation` |
-| 2 | budget completeness: `milestones.sum = funded` | `MezoGig.budget_complete` |
-| 3 | dispute exactness: `a + b = amount` for the arbiter split | `MezoGig.dispute_split_correct` |
-| 4 | floor rounding never creates money: `Σ (total / n) ≤ total` | `MezoGig.floor_split_no_gain` |
+There are **12 headline theorems in three groups** (plus supporting lemmas such as `fund_inv`,
+`inv_of_reachable` and `split_le_amount`).
+
+### Accounting
+
+| Claim | Theorem |
+|---|---|
+| no money creation: `paidOut + refunded ≤ funded` in every reachable state | `MezoGig.no_money_creation` |
+| budget completeness: `milestones.sum = funded` | `MezoGig.budget_complete` |
+| dispute exactness: `a + b = amount` for the arbiter split | `MezoGig.dispute_split_correct` |
+| floor rounding never creates money: `Σ (total / n) ≤ total` | `MezoGig.floor_split_no_gain` |
+
+### Asset assumptions
+
+The escrow assumes a **non-fee, non-rebasing ERC-20; MUSD is such a token** (standard ERC-20 +
+EIP-2612). If that assumption is violated, the accounting invariant does not hold:
+
+| Claim | Theorem |
+|---|---|
+| a no-fee transfer preserves the nominal budget identity | `MezoGig.no_fee_preserves_budget` |
+| a fee-on-transfer concretely breaks it: nominal `100` credits `95` | `MezoGig.fee_on_transfer_breaks_budget` |
+| any positive fee leaves a shortfall against the nominal budget | `MezoGig.fee_shortfall` |
+| a non-zero rebase makes a tracked `lockedAmount` stale | `MezoGig.rebasing_breaks_locked` |
+
+These are **assumptions**, not properties of arbitrary tokens. The contract mitigates the supported case by
+binding to MUSD with an immutable address; fee-on-transfer and rebasing tokens are explicitly out of scope
+(see Known limitations).
+
+### Permit replay
+
+The model covers nonce monotonicity, not ECDSA signature validity:
+
+| Claim | Theorem |
+|---|---|
+| a successful permit increments the owner nonce by exactly one | `MezoGig.nonce_strictly_increases` |
+| the same `(owner, nonce)` signature cannot be applied twice | `MezoGig.no_replay` |
+| replay-freedom holds for every reachable permit state | `MezoGig.no_replay_reachable` |
+| without the increment, replay is possible (non-vacuity counterexample) | `MezoGig.no_increment_allows_replay` |
 
 Supporting results: `MezoGig.inv_of_reachable` (all transitions preserve the invariant) and
-`MezoGig.resolve_preserves_budget`. The model is non-vacuous: `MezoGig.ceil_split_breaks` proves that naive
-ceiling rounding does break invariant 4. Out of scope: `uint128` overflow, addresses/tokens, and weighted
-splits (the floor lemma is stated for equal splits). This is **model checking, not bytecode verification**.
+`MezoGig.ceil_split_breaks` / `MezoGig.bps_over_10000_breaks` (non-vacuity counterexamples). Out of scope:
+`uint128` overflow, addresses, ECDSA, reentrancy, and weighted splits (the floor lemma is stated for equal
+splits). This is **model checking, not bytecode verification**.
 
 ## Known limitations (honest list)
 

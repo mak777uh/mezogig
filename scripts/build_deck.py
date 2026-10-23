@@ -347,24 +347,23 @@ s = slide()
 header(s, "Formal accounting · Lean 4", "Machine-checked invariants, honest scope")
 box(s, Inches(0.7), Inches(2.1), Inches(7.3), Inches(4.55), fill=PANEL, line=RGBColor(0x1D, 0x4A, 0x33))
 text(s, Inches(0.95), Inches(2.28), Inches(6.8), Inches(4.2), [
-    ("Pinned Lean 4.30.0 · 0 sorry", 14, ACCENT, True),
+    ("12 headline theorems · 3 groups · 0 sorry", 12, ACCENT, True),
     ("An arithmetic model of the ledger, not a verification of Solidity bytecode.", 10, MUTED, False),
     ("", 4, TEXT, False),
-    ("No money creation", 13, TEXT, True),
-    ("paidOut + refunded ≤ funded", 11, TEXT, False),
-    ("MezoGig.no_money_creation", 10, MUTED, False),
+    ("Accounting", 13, ACCENT, True),
+    ("no_money_creation · budget_complete", 9, TEXT, False),
+    ("dispute_split_correct · floor_split_no_gain", 9, TEXT, False),
+    ("", 2, TEXT, False),
+    ("Asset assumptions", 13, ACCENT, True),
+    ("non-fee, non-rebasing ERC-20; MUSD is such a token", 9, TEXT, False),
+    ("no_fee_preserves_budget · fee_on_transfer_breaks_budget", 8, TEXT, False),
+    ("fee_shortfall · rebasing_breaks_locked", 9, TEXT, False),
+    ("", 2, TEXT, False),
+    ("Permit replay", 13, ACCENT, True),
+    ("nonce_strictly_increases · no_replay", 9, TEXT, False),
+    ("no_replay_reachable · no_increment_allows_replay", 9, TEXT, False),
     ("", 3, TEXT, False),
-    ("Budget completeness", 13, TEXT, True),
-    ("milestones.sum = funded", 11, TEXT, False),
-    ("MezoGig.budget_complete", 10, MUTED, False),
-    ("", 3, TEXT, False),
-    ("Dispute exactness", 13, TEXT, True),
-    ("a + b = amount", 11, TEXT, False),
-    ("MezoGig.dispute_split_correct", 10, MUTED, False),
-    ("", 3, TEXT, False),
-    ("Floor rounding never creates money", 13, TEXT, True),
-    ("Σ (total / n) ≤ total", 11, TEXT, False),
-    ("MezoGig.floor_split_no_gain", 10, MUTED, False),
+    ("Model checked, not bytecode verification. Fee/rebasing are assumptions; if violated, the invariant fails.", 8, WARN, False),
 ], space=2)
 lean_shot = os.path.join(SCREENS, "lean_compile.png")
 if os.path.exists(lean_shot):

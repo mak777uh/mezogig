@@ -25,7 +25,8 @@ Compact, copy-pasteable proof for judges. No claims beyond what is linked here.
 - Reentrancy: 6 malicious-token attacks rejected (`test/Reentrancy.test.js`).
 - Local end-to-end: fund → submit → approve/claim → dispute split → refund → mutual cancel,
   contract balance returns to 0 (`docs/DEMO.md`).
-- Lean: `lean/Escrow.lean` — `lake env lean Escrow.lean` → **exit 0, 0 sorry**; latest green run:
+- Lean: **12 headline theorems** across accounting, asset assumptions and permit replay —
+  `lake env lean Escrow.lean` → **exit 0, 0 sorry**; latest green run:
   https://github.com/mak777uh/mezogig/actions/runs/39951559621. Arithmetic model only — not bytecode
   verification.
 

@@ -2,9 +2,9 @@
 
 [![test](https://github.com/mak777uh/mezogig/actions/workflows/test.yml/badge.svg)](https://github.com/mak777uh/mezogig/actions/workflows/test.yml)
 [![Sourcify exact_match](https://img.shields.io/badge/Sourcify-exact__match-00d68f)](https://repo.sourcify.dev/contracts/full_match/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F/)
-[![formal: Lean 4 · 0 sorry](https://img.shields.io/badge/formal-Lean%204%20%C2%B7%200%20sorry-00d68f)](https://github.com/mak777uh/mezogig/actions/workflows/lean.yml)
+[![formal: Lean 4 · 0 sorry · 12 theorems](https://img.shields.io/badge/formal-Lean%204%20%C2%B7%200%20sorry%20%C2%B7%2012%20theorems-00d68f)](https://github.com/mak777uh/mezogig/actions/workflows/lean.yml)
 
-**90 tests · 100% statements · Sourcify exact_match · Lean 4 · 0 sorry · agent CLI + MCP**
+**90 tests · 100% statements · Sourcify exact_match · Lean 4 · 0 sorry · 12 theorems · agent CLI + MCP**
 
 > Hackathon project for **AKINDO “Build with MUSD and MEZO”**.
 > Testnet only. No real money, no platform fee, no admin keys.
