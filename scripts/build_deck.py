@@ -322,6 +322,7 @@ text(s, Inches(0.95), Inches(2.35), Inches(5.4), Inches(3.8), [
     ("exit codes 0/1/2/3 = ok / input / network / revert", 12, TEXT, False, "bullet"),
     ("21 new tests (CLI + MCP + pin); npm test = 90 passing", 12, TEXT, False, "bullet"),
     ("commit fbf6fb8; contract unchanged", 12, TEXT, False, "bullet"),
+    ("Sourcify exact_match · creation + runtime", 11, TEXT, False, "bullet"),
     ("", 5, TEXT, False),
     ("Read-only calls checked against the deployed contract; no transaction sent.", 10, MUTED, False),
 ])
@@ -344,5 +345,6 @@ footer(s, 9)
 out_pptx = os.path.join(ROOT, "docs", "deck.pptx")
 prs.save(out_pptx)
 print("saved", out_pptx, os.path.getsize(out_pptx), "bytes")
+
 
 
