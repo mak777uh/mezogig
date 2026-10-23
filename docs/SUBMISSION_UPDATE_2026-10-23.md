@@ -16,6 +16,10 @@ Additive update — the deployed contract is unchanged.
 - Read-only check against the deployed Mezo Testnet contract: `chainId: 31611`, `musdMatches: true`,
   `reviewPeriodSeconds: 148`, `gigCount: 0`.
 - Commit: https://github.com/mak777uh/mezogig/commit/fbf6fb8
+- CI: `.github/workflows/test.yml` — `npm ci` → compile → `npm test` → coverage; latest green run:
+  https://github.com/mak777uh/mezogig/actions/runs/39945778835
+- Demo video: [`docs/demo_agent.mp4`](demo_agent.mp4) — 72 s, 1920×1080; real MCP session, `verify --json`,
+  `npm test`, UI screenshot; generated chiptune soundtrack.
 
 **How to check it**
 ```bash

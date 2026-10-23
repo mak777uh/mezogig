@@ -30,9 +30,9 @@ Compact, copy-pasteable proof for judges. No claims beyond what is linked here.
 
 - Workflow: [`.github/workflows/test.yml`](.github/workflows/test.yml) — `npm ci` → `npx hardhat compile` →
   `npm test` → `npm run coverage` on every push/PR to `main`.
-- Actions: https://github.com/mak777uh/mezogig/actions/workflows/test.yml
-- Status badge is on the first line of the README; this file is updated with the exact run link after the
-  first green run.
+- Latest run: **success** — https://github.com/mak777uh/mezogig/actions/runs/39945778835
+- Status badge is on the first line of the README; Actions page:
+  https://github.com/mak777uh/mezogig/actions/workflows/test.yml
 
 ## Agent interfaces
 
