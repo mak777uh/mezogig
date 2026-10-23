@@ -1,0 +1,136 @@
+{
+  "project": "mezogig",
+  "asset": "MUSD (Mezo testnet)",
+  "lean_file": "lean/Escrow.lean",
+  "toolchain": "leanprover/lean4:v4.30.0",
+  "verified_command": "cd lean && lake env lean Escrow.lean",
+  "assumptions": [
+    "asset is a non-fee, non-rebasing ERC-20 (MUSD)",
+    "permit nonce increases by exactly 1 on each successful permit",
+    "the escrow is treated as a state machine; uint128 overflow, deadlines, addresses and reentrancy are out of scope"
+  ],
+  "invariants": [
+    {
+      "id": "accounting.no_money_creation",
+      "theorem": "MezoGig.no_money_creation",
+      "group": "accounting",
+      "natural_language": "For every reachable state, paidOut + refunded is at most funded, so the escrow never creates money.",
+      "applies_to": ["approveMilestone", "claimMilestone", "refundExpired", "resolveDispute", "confirmCancel"],
+      "tested_by": ["test/MezoGigEscrow.test.js:407", "test/MezoGigEscrow.test.js:725"],
+      "status": "proved"
+    },
+    {
+      "id": "accounting.budget_complete",
+      "theorem": "MezoGig.budget_complete",
+      "group": "accounting",
+      "natural_language": "The sum of all milestone amounts equals the amount funded at creation, so no budget is left as dust.",
+      "applies_to": ["createGig", "createGigWithPermit"],
+      "tested_by": ["test/MezoGigEscrow.test.js:96"],
+      "status": "proved"
+    },
+    {
+      "id": "accounting.dispute_split_correct",
+      "theorem": "MezoGig.dispute_split_correct",
+      "group": "accounting",
+      "natural_language": "For any basis-point split allowed by the contract, the freelancer share plus the client share equals the disputed milestone amount.",
+      "applies_to": ["resolveDispute"],
+      "tested_by": ["test/MezoGigEscrow.test.js:581", "test/MezoGigEscrow.test.js:607", "test/MezoGigEscrow.test.js:790"],
+      "status": "proved"
+    },
+    {
+      "id": "accounting.floor_split_no_gain",
+      "theorem": "MezoGig.floor_split_no_gain",
+      "group": "accounting",
+      "natural_language": "Splitting a total into equal floor parts never makes the parts add up to more than the total.",
+      "applies_to": [],
+      "tested_by": [],
+      "no_direct_test": true,
+      "status": "proved"
+    },
+    {
+      "id": "accounting.bps_over_10000_breaks",
+      "theorem": "MezoGig.bps_over_10000_breaks",
+      "group": "accounting",
+      "natural_language": "If the basis-point bound were removed, a 10001 bps split of 10000 could pay 10001, so the contract must reject bps above 10000.",
+      "applies_to": ["resolveDispute"],
+      "tested_by": ["test/MezoGigEscrow.test.js:624"],
+      "status": "counterexample",
+      "counterexample_of": "accounting.dispute_split_correct",
+      "counterexample_description": "split(10000, 10001).freelancer = 10001, which is greater than amount = 10000."
+    },
+    {
+      "id": "accounting.ceil_split_breaks",
+      "theorem": "MezoGig.ceil_split_breaks",
+      "group": "accounting",
+      "natural_language": "Rounding a 10-unit total up into three parts gives 4 + 4 + 4 = 12, which exceeds the total, so ceiling rounding would create money.",
+      "applies_to": [],
+      "tested_by": [],
+      "no_direct_test": true,
+      "status": "counterexample",
+      "counterexample_of": "accounting.floor_split_no_gain",
+      "counterexample_description": "ceilParts(10, 3).sum = 12, while the total is 10; the floor version sums to 9."
+    },
+    {
+      "id": "asset.no_fee_preserves_budget",
+      "theorem": "AssetAssumptions.no_fee_preserves_budget",
+      "group": "asset assumptions",
+      "natural_language": "If the token credits exactly the amount it debits, the escrow's accounting identity is valid against the nominal funded amount.",
+      "applies_to": ["createGig", "createGigWithPermit", "approveMilestone", "claimMilestone", "refundExpired", "resolveDispute"],
+      "tested_by": ["test/MezoGigEscrow.test.js:96"],
+      "status": "assumption"
+    },
+    {
+      "id": "asset.fee_on_transfer_breaks_budget",
+      "theorem": "AssetAssumptions.fee_on_transfer_breaks_budget",
+      "group": "asset assumptions",
+      "natural_language": "If a 100-unit deposit is credited as 95 because of a transfer fee, the actual balance is 95 and no longer equals the nominal 100-unit budget.",
+      "applies_to": ["createGig"],
+      "tested_by": [],
+      "no_direct_test": true,
+      "status": "counterexample",
+      "counterexample_of": "asset.no_fee_preserves_budget",
+      "counterexample_description": "nominalFunded = 100, credited = 95, paidOut + refunded + remaining = 95, which is not equal to 100."
+    },
+    {
+      "id": "asset.rebasing_breaks_locked",
+      "theorem": "AssetAssumptions.rebasing_breaks_locked",
+      "group": "asset assumptions",
+      "natural_language": "If a rebasing token changes the actual balance by a non-zero amount, the tracked locked amount no longer matches the real balance.",
+      "applies_to": ["lockedAmount"],
+      "tested_by": [],
+      "no_direct_test": true,
+      "status": "proved"
+    },
+    {
+      "id": "permit.nonce_strictly_increases",
+      "theorem": "PermitModel.nonce_strictly_increases",
+      "group": "permit replay",
+      "natural_language": "Every successful EIP-2612 permit increases the owner's nonce by exactly one.",
+      "applies_to": ["createGigWithPermit"],
+      "tested_by": ["test/MezoGigEscrow.test.js:227"],
+      "status": "proved"
+    },
+    {
+      "id": "permit.no_replay",
+      "theorem": "PermitModel.no_replay",
+      "group": "permit replay",
+      "natural_language": "After a successful permit, the same owner and old nonce no longer match, so the same signed permit cannot be replayed.",
+      "applies_to": ["createGigWithPermit"],
+      "tested_by": [],
+      "no_direct_test": true,
+      "status": "proved"
+    },
+    {
+      "id": "permit.no_increment_allows_replay",
+      "theorem": "PermitModel.no_increment_allows_replay",
+      "group": "permit replay",
+      "natural_language": "A permit implementation that does not increment the nonce still accepts the old nonce, so the increment is what prevents replay.",
+      "applies_to": ["createGigWithPermit"],
+      "tested_by": [],
+      "no_direct_test": true,
+      "status": "counterexample",
+      "counterexample_of": "permit.no_replay",
+      "counterexample_description": "With permitNoIncrement, nonces owner stays equal to the old nonce, so the same signature remains applicable."
+    }
+  ]
+}
