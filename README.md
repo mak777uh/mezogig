@@ -1,5 +1,8 @@
 # MezoGig — milestone escrow for freelance work, settled in MUSD on Mezo
 
+[![test](https://github.com/mak777uh/mezogig/actions/workflows/test.yml/badge.svg)](https://github.com/mak777uh/mezogig/actions/workflows/test.yml)
+[![Sourcify exact_match](https://img.shields.io/badge/Sourcify-exact__match-00d68f)](https://repo.sourcify.dev/contracts/full_match/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F/)
+
 **90 tests · 100% statements · Sourcify exact_match · agent CLI + MCP**
 
 > Hackathon project for **AKINDO “Build with MUSD and MEZO”**.
@@ -92,6 +95,7 @@ a WalletConnect project id the app uses injected wallets and the console stays c
 - Deck: [`docs/deck.pdf`](docs/deck.pdf) — 9 slides: problem → solution → how MUSD works in the escrow →
   demo → technical/security → business → roadmap → team → Agent Console (new 23.10).
 - Video: [`docs/demo.mp4`](docs/demo.mp4) — 113 s, captioned, screen-only (no voice, no face).
+- Agent demo: [`docs/demo_agent.mp4`](docs/demo_agent.mp4) — 72 s, 1920×1080; real MCP session, `verify --json`, `npm test`, UI screenshot; generated chiptune soundtrack.
 
 ## Test it in ~5 minutes1. **Add Mezo Testnet** to your wallet: RPC `https://rpc.test.mezo.org`, chainId `31611`, symbol `BTC`,
    explorer `https://explorer.test.mezo.org`.

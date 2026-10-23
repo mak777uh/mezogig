@@ -288,6 +288,9 @@ async function handleRequest(req) {
 
 function main() {
   let buf = "";
+  let pending = 0;
+  let ended = false;
+  const maybeExit = () => { if (ended && pending === 0) process.exit(0); };
   process.stdin.setEncoding("utf8");
   process.stdin.on("data", (chunk) => {
     buf += chunk;
@@ -297,10 +300,14 @@ function main() {
       if (!line.trim()) continue;
       let req;
       try { req = JSON.parse(line); } catch { process.stderr.write("invalid JSON\n"); continue; }
-      handleRequest(req).then((res) => { if (res) process.stdout.write(JSON.stringify(res) + "\n"); });
+      pending++;
+      handleRequest(req)
+        .then((res) => { if (res) process.stdout.write(JSON.stringify(res) + "\n"); })
+        .catch((e) => process.stderr.write(`request error: ${e.message}\n`))
+        .finally(() => { pending--; maybeExit(); });
     }
   });
-  process.stdin.on("end", () => process.exit(0));
+  process.stdin.on("end", () => { ended = true; maybeExit(); });
 }
 
 if (require.main === module) main();

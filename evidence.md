@@ -14,6 +14,7 @@ Compact, copy-pasteable proof for judges. No claims beyond what is linked here.
 | Explorer | https://explorer.test.mezo.org/address/0x247b313d0eD3C532B16c7E5f9eA760272361600F |
 | Sourcify | **exact_match** (creation + runtime): https://repo.sourcify.dev/contracts/full_match/31611/0x247b313d0eD3C532B16c7E5f9eA760272361600F/ |
 | Live demo | https://mak777uh.github.io/mezogig/ |
+| Agent demo video | [`docs/demo_agent.mp4`](docs/demo_agent.mp4) — 72 s, 1920×1080; real MCP session + verify + tests |
 | Repo | https://github.com/mak777uh/mezogig (MIT) |
 
 ## Tests
@@ -24,6 +25,14 @@ Compact, copy-pasteable proof for judges. No claims beyond what is linked here.
 - Reentrancy: 6 malicious-token attacks rejected (`test/Reentrancy.test.js`).
 - Local end-to-end: fund → submit → approve/claim → dispute split → refund → mutual cancel,
   contract balance returns to 0 (`docs/DEMO.md`).
+
+## CI
+
+- Workflow: [`.github/workflows/test.yml`](.github/workflows/test.yml) — `npm ci` → `npx hardhat compile` →
+  `npm test` → `npm run coverage` on every push/PR to `main`.
+- Actions: https://github.com/mak777uh/mezogig/actions/workflows/test.yml
+- Status badge is on the first line of the README; this file is updated with the exact run link after the
+  first green run.
 
 ## Agent interfaces
 
