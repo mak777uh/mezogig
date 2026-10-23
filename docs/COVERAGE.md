@@ -1,7 +1,7 @@
 # Coverage report
 
 Command: `npm run coverage` (runs `hardhat --config hardhat.config.coverage.js coverage`).
-Date: 2026-10-19. Test suite: **69 tests**, all passing.
+Date: 2026-10-23. Test suite: **90 tests**, all passing.
 
 | File | % Stmts | % Branch | % Funcs | % Lines |
 |---|---|---|---|---|
@@ -27,3 +27,4 @@ The uncovered branches are defensive checks that are unreachable by construction
 `gig.status != Active` re-check inside `resolveDispute`, which can only run while a milestone is `Disputed`
 and a disputed milestone can only exist in an active gig). They are kept on purpose — cheap redundancy in
 case the state machine is ever extended — and are documented in `docs/SECURITY.md`.
+

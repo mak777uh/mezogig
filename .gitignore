@@ -11,3 +11,6 @@ typechain-types/
 frontend/dist/
 _*.log
 
+
+# Local-only yield prototype; not part of the submitted scope
+experiments/
