@@ -87,8 +87,8 @@ a WalletConnect project id the app uses injected wallets and the console stays c
 
 ## Deck & 2-minute video
 
-- Deck: [`docs/deck.pdf`](docs/deck.pdf) — 8 slides: problem → solution → how MUSD works in the escrow →
-  demo → technical/security → business → roadmap → team.
+- Deck: [`docs/deck.pdf`](docs/deck.pdf) — 9 slides: problem → solution → how MUSD works in the escrow →
+  demo → technical/security → business → roadmap → team → Agent Console (new 23.10).
 - Video: [`docs/demo.mp4`](docs/demo.mp4) — 113 s, captioned, screen-only (no voice, no face).
 
 ## Test it in ~5 minutes1. **Add Mezo Testnet** to your wallet: RPC `https://rpc.test.mezo.org`, chainId `31611`, symbol `BTC`,

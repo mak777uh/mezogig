@@ -89,7 +89,7 @@ def header(s, kicker, title):
 def footer(s, n):
     text(s, Inches(0.7), Inches(7.0), Inches(9), Inches(0.3),
          [("MezoGig · milestone escrow in MUSD on Mezo · AKINDO “Build with MUSD and MEZO”, Wave 1", 10, MUTED, False)])
-    text(s, Inches(11.8), Inches(7.0), Inches(0.9), Inches(0.3), [(f"{n}/8", 10, MUTED, False)], align=PP_ALIGN.RIGHT)
+    text(s, Inches(11.8), Inches(7.0), Inches(0.9), Inches(0.3), [(f"{n}/9", 10, MUTED, False)], align=PP_ALIGN.RIGHT)
 
 
 # 1 — title -----------------------------------------------------------------
@@ -115,7 +115,7 @@ box(s, Inches(6.7), Inches(5.3), Inches(5.9), Inches(1.35), fill=PANEL, line=RGB
 text(s, Inches(6.95), Inches(5.45), Inches(5.5), Inches(1.1), [
     ("Contract (Mezo Testnet)", 11, MUTED, True),
     ("0x247b313d0eD3C532B16c7E5f9eA760272361600F", 12, TEXT, True),
-    ("Sourcify exact_match · 69 tests · no owner, no fee", 11, MUTED, False),
+    ("Sourcify exact_match · 79 tests · no owner, no fee", 11, MUTED, False),
 ])
 footer(s, 1)
 
@@ -214,7 +214,7 @@ footer(s, 5)
 s = slide()
 header(s, "Technical (20 %)", "Small contract, boring security, checkable evidence")
 left = [
-    ("69 tests", "lifecycle, guards, terminal states, fuzz invariants"),
+    ("79 tests", "lifecycle, guards, terminal states, fuzz invariants"),
     ("100 % / 92 %", "statements / branches of the escrow contract"),
     ("6 attacks", "malicious ERC-20 reentrancy attempts, all rejected"),
     ("6 Slither findings", "every one dispositioned, no high/medium"),
@@ -233,7 +233,7 @@ text(s, Inches(7.1), Inches(2.28), Inches(5.3), Inches(2.3), [
     ("  node scripts/check-musd.js", 10, TEXT, False),
     ("→ musd(), reviewPeriod()=148, gigCount()=0", 10, ACCENT, False),
     ("", 4, TEXT, False),
-    ("npm test        # 69 passing", 10, TEXT, False),
+    ("npm test        # 79 passing", 10, TEXT, False),
     ("npm run coverage", 10, TEXT, False),
     ("npm run verify:sourcify", 10, TEXT, False),
 ])
@@ -308,6 +308,39 @@ text(s, Inches(8.5), Inches(5.28), Inches(3.9), Inches(1.0), [
 ])
 footer(s, 8)
 
+# 9 — agent console ---------------------------------------------------------
+s = slide()
+header(s, "New · 23 Oct 2026", "The same escrow, operable by an agent")
+box(s, Inches(0.7), Inches(2.15), Inches(5.9), Inches(4.2), fill=PANEL, line=RGBColor(0x1D, 0x4A, 0x33))
+text(s, Inches(0.95), Inches(2.35), Inches(5.4), Inches(3.8), [
+    ("Machine-readable CLI", 16, ACCENT, True),
+    ("scripts/agent-console.js — no UI, no keys printed", 11, MUTED, False),
+    ("", 5, TEXT, False),
+    ("status · jobs list · job get · watch · verify", 12, TEXT, False, "bullet"),
+    ("lifecycle commands build calldata; --dry-run is the default", 12, TEXT, False, "bullet"),
+    ("exit codes 0/1/2/3 = ok / input / network / revert", 12, TEXT, False, "bullet"),
+    ("10 new tests; npm test = 79 passing", 12, TEXT, False, "bullet"),
+    ("commit fbf6fb8; contract unchanged", 12, TEXT, False, "bullet"),
+    ("", 5, TEXT, False),
+    ("Read-only calls checked against the deployed contract; no transaction sent.", 10, MUTED, False),
+])
+box(s, Inches(6.9), Inches(2.15), Inches(5.7), Inches(4.2), fill=RGBColor(0x06, 0x18, 0x0F), line=RGBColor(0x1D, 0x4A, 0x33))
+text(s, Inches(7.1), Inches(2.3), Inches(5.3), Inches(3.8), [
+    ("$ npm run agent -- verify --json", 10, ACCENT, True),
+    ("{", 10, TEXT, False),
+    ('  "chainId": 31611,', 10, TEXT, False),
+    ('  "escrow": "0x247b313d0eD3C532B16c7E5f9eA760272361600F",', 9, TEXT, False),
+    ('  "musd": "0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503",', 9, TEXT, False),
+    ('  "musdMatches": true,', 10, TEXT, False),
+    ('  "reviewPeriodSeconds": 148,', 10, TEXT, False),
+    ('  "ok": true', 10, TEXT, False),
+    ("}", 10, TEXT, False),
+    ("$ npm test", 10, ACCENT, True),
+    ("79 passing", 11, ACCENT, True),
+], space=3)
+footer(s, 9)
+
 out_pptx = os.path.join(ROOT, "docs", "deck.pptx")
 prs.save(out_pptx)
 print("saved", out_pptx, os.path.getsize(out_pptx), "bytes")
+

@@ -10,7 +10,10 @@
 | **Product & Business Viability 30 %** | Freelancers deliver first and hope to be paid; clients who pay first carry the opposite risk. MezoGig removes that counterparty risk with milestone escrow in a BTC-backed stablecoin, no platform fee, usable by crypto-native clients and DAOs. | §2, deck slide 7 |
 | **Technical Implementation 20 %** | 79 tests, 100 % statement / 92 % branch coverage, 6 reentrancy attacks rejected, Slither reviewed (0 high/medium), Sourcify `exact_match`, read-only Agent Console CLI; one verification command. | §6, deck slide 6, [`docs/COVERAGE.md`](COVERAGE.md) |
 | **User Experience 10 %** | Three-tab UI (create / my gigs / how to test), role-aware buttons, invite links, live demo on GitHub Pages; a judge completes the loop in ~5 minutes. | §5, §5.1, [`docs/screens/`](screens/) |
-| **Submission Materials 10 %** | README + this file + DEMO + 8-slide deck (`docs/deck.pdf`) + 113-second captioned video (`docs/demo.mp4`). | §1, §3, §9.3 |
+| **Submission Materials 10 %** | README + this file + DEMO + 9-slide deck (`docs/deck.pdf`) + 113-second captioned video (`docs/demo.mp4`). | §1, §3, §9.3 |
+
+> **Update 23 Oct 2026:** Agent Console added (read-only/dry-run CLI, 10 new tests, total 79 passing,
+> commit `fbf6fb8`). The deployed contract is unchanged. Full delta: [`SUBMISSION_UPDATE_2026-10-23.md`](SUBMISSION_UPDATE_2026-10-23.md).
 
 ## 1. What is submitted
 
@@ -27,7 +30,7 @@
 | MUSD token | [`0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503`](https://explorer.test.mezo.org/address/0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503) (18 dec, EIP-2612) |
 | Review period | **148 s** (short on purpose: the auto-claim path must be testable in minutes) |
 | Live demo | **<https://mak777uh.github.io/mezogig/>** (GitHub Pages; Mezo Testnet wired in) |
-| Deck | [`docs/deck.pdf`](deck.pdf) — 8 slides, weight-aligned |
+| Deck | [`docs/deck.pdf`](deck.pdf) — **9 slides** (8 original + Agent Console), weight-aligned |
 | Pitch video | [`docs/demo.mp4`](demo.mp4) — 113 s, captioned, screen-only |
 | Agent console (23.10) | [`scripts/agent-console.js`](scripts/agent-console.js) — read-only / dry-run CLI: `status`, `jobs list`, `job get`, `watch`, `verify`; lifecycle calldata builders. 10 tests. |
 
