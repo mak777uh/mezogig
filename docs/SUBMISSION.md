@@ -8,7 +8,7 @@
 |---|---|---|
 | **Mezo Integration 30 %** | MUSD is the settlement asset for the whole gig: deposit, milestone payout, refund, dispute split — contract bound to `0x1189…c503`, permit funding, immutable token. MEZO itself is **not** integrated (allowed: “MUSD and/or MEZO”) and is stated as a roadmap item. | §2, §9.4, deck slides 3–4 |
 | **Product & Business Viability 30 %** | Freelancers deliver first and hope to be paid; clients who pay first carry the opposite risk. MezoGig removes that counterparty risk with milestone escrow in a BTC-backed stablecoin, no platform fee, usable by crypto-native clients and DAOs. | §2, deck slide 7 |
-| **Technical Implementation 20 %** | 69 tests, 100 % statement / 92 % branch coverage, 6 reentrancy attacks rejected, Slither reviewed (0 high/medium), Sourcify `exact_match`; one verification command. | §6, deck slide 6, [`docs/COVERAGE.md`](COVERAGE.md) |
+| **Technical Implementation 20 %** | 79 tests, 100 % statement / 92 % branch coverage, 6 reentrancy attacks rejected, Slither reviewed (0 high/medium), Sourcify `exact_match`, read-only Agent Console CLI; one verification command. | §6, deck slide 6, [`docs/COVERAGE.md`](COVERAGE.md) |
 | **User Experience 10 %** | Three-tab UI (create / my gigs / how to test), role-aware buttons, invite links, live demo on GitHub Pages; a judge completes the loop in ~5 minutes. | §5, §5.1, [`docs/screens/`](screens/) |
 | **Submission Materials 10 %** | README + this file + DEMO + 8-slide deck (`docs/deck.pdf`) + 113-second captioned video (`docs/demo.mp4`). | §1, §3, §9.3 |
 
@@ -29,6 +29,7 @@
 | Live demo | **<https://mak777uh.github.io/mezogig/>** (GitHub Pages; Mezo Testnet wired in) |
 | Deck | [`docs/deck.pdf`](deck.pdf) — 8 slides, weight-aligned |
 | Pitch video | [`docs/demo.mp4`](demo.mp4) — 113 s, captioned, screen-only |
+| Agent console (23.10) | [`scripts/agent-console.js`](scripts/agent-console.js) — read-only / dry-run CLI: `status`, `jobs list`, `job get`, `watch`, `verify`; lifecycle calldata builders. 10 tests. |
 
 ## 2. What it does (one paragraph)
 
@@ -179,13 +180,38 @@ escrow:   0x247b313d0eD3C532B16c7E5f9eA760272361600F
 ```
 
 ```bash
-# 2) the test suite and coverage (69 tests, no network needed)
+# 2) the test suite and coverage (79 tests, no network needed)
 npm ci && npm test
 npm run coverage
 
 # 3) the verification record (Sourcify exact_match)
 cat deployments/mezoTestnet.json
 ```
+
+## 5.3 Agent console — check the escrow without a browser (added 23.10)
+
+`scripts/agent-console.js` is a read-only, machine-readable interface for agents and DAOs. It sends no
+transaction unless `--send` is passed explicitly; the public submission uses read-only and `--dry-run` only.
+
+```bash
+npm run agent -- verify --json
+# {"chainId":31611,"escrow":"0x247b...","musd":"0x1189...","musdMatches":true,"reviewPeriodSeconds":148,"ok":true}
+
+npm run agent -- status --json
+# contract, MUSD, reviewPeriodSeconds, gigCount, gigs[] with milestone status/claimable/overdue
+
+npm run agent -- job create --worker 0x... --amount 100 --milestones 3 --dry-run --json
+# {"to":"0x247b...","function":"createGig","args":[...],"calldata":"0x...","dryRun":true}
+```
+
+Exit codes: `0` success, `1` input error, `2` network/contract error, `3` contract revert with a reason.
+`job fund <id>` is intentionally not implemented: `createGig` funds the whole budget atomically and there is
+no top-up function. Lifecycle commands (`submit`, `approve`, `release`, `dispute`) also default to calldata
+only, so a judge or an agent can inspect them without a key.
+
+Honest scope: the read-only `verify`/`status` calls were run against the deployed testnet contract on
+23.10.2026 (`chainId 31611`, `musdMatches: true`, `reviewPeriodSeconds: 148`, `gigCount: 0`). Lifecycle
+commands were tested as pure calldata builders only; no transaction was sent from this console.
 
 ## 6. Requirement → evidence
 
@@ -230,7 +256,7 @@ cat deployments/mezoTestnet.json
 ```
 contracts/MezoGigEscrow.sol   the escrow (one contract, ~490 lines)
 contracts/mocks/              MockMUSD + ReentrantMUSD (tests only, never deployed)
-test/                         69 tests: lifecycle, guards, reentrancy, fuzz invariants
+test/                         79 tests: lifecycle, guards, reentrancy, fuzz invariants, agent console
 frontend/                     Vite + React + wagmi/viem + RainbowKit (Mezo Testnet wired in)
 scripts/                      deploy, demo, fork-demo, export-abi, verify-args.sh
 docs/                         SECURITY, TESTING, COVERAGE, SLITHER_REPORT, DEMO, JUDGE_CHECKLIST, SUBMISSION

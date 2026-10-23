@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | Contract | `contracts/MezoGigEscrow.sol` — compiled with solc 0.8.28, `evmVersion: london` |
-| Tests | **69 passing** (`npm test`) |
+| Tests | **79 passing** (`npm test`) |
 | Coverage | **100 % statements / 92 % branches / 100 % functions / 100 % lines** (escrow) — [`docs/COVERAGE.md`](docs/COVERAGE.md) |
 | Static analysis | Slither 0.11.6 — 6 findings, all reviewed — [`docs/SLITHER_REPORT.md`](docs/SLITHER_REPORT.md) |
 | Local end-to-end | full lifecycle executed on a local chain, tx list — [`docs/DEMO.md`](docs/DEMO.md) |
@@ -108,6 +108,41 @@ a WalletConnect project id the app uses injected wallets and the console stays c
 The demo deployment uses a **short review period** (148 s by default) so the auto-claim can be tested
 without waiting days.
 
+## Agent console (read-only + dry-run)
+
+`scripts/agent-console.js` is a machine-readable interface for agents and DAOs. It never prints private
+keys and sends no transaction unless `--send` is passed explicitly (do not use `--send` for the public
+testnet submission).
+
+```bash
+npm run agent -- status --json        # contract, MUSD, review period, gigs, milestones
+npm run agent -- jobs list            # same, human-readable
+npm run agent -- job get 1 --json     # one gig, full milestone detail
+npm run agent -- watch 1 --interval 5 # print on status/milestone/claimable changes
+npm run agent -- verify --json        # chainId, MUSD match, reviewPeriod; exit 0/2
+```
+
+Lifecycle commands build **calldata only** by default:
+
+```bash
+npm run agent -- job create --worker 0x... --amount 100 --milestones 3 --dry-run --json
+npm run agent -- job submit 1 --index 0 --proof ipfs://... --dry-run --json
+npm run agent -- job approve 1 --index 0 --dry-run --json
+npm run agent -- job release 1 --index 0 --dry-run --json
+npm run agent -- job dispute 1 --index 0 --dry-run --json
+```
+
+`job fund <id>` is intentionally not implemented: `createGig` funds the whole budget atomically and the
+contract has no top-up function.
+
+Exit codes: `0` success, `1` input error, `2` network/contract error, `3` contract revert with a reason.
+RPC and escrow default to the public Mezo Testnet deployment and can be overridden with `--rpc`,
+`--escrow`, `MEZO_RPC_URL`, or `MEZOGIG_ESCROW`.
+
+Read-only check against the deployed contract (23.10.2026): chainId `31611`, `musdMatches: true`,
+`reviewPeriodSeconds: 148`, `gigCount: 0` (no funded gigs on the public testnet — testnet MUSD requires
+borrowing against test BTC; this is stated in `docs/DEMO.md`).
+
 ## Repository layout
 
 ```
@@ -123,6 +158,7 @@ scripts/
   deploy.js                # deploys (auto-deploys MockMUSD on localhost) + writes deployments/<net>.json
   export-abi.js            # copies the ABI into the frontend
   demo.js                  # end-to-end flow: approve, auto-claim, dispute split, mutual cancel
+  agent-console.js         # read-only / dry-run CLI for agents and DAOs (see "Agent console")
 frontend/                  # Vite + React + wagmi/viem + RainbowKit, Mezo Testnet wired in
 deployments/               # deploy receipts
 docs/
@@ -138,7 +174,7 @@ docs/
 ```bash
 npm install
 npm run compile
-npm test          # 69 passing
+npm test          # 79 passing (69 contract + 10 agent-console)
 npm run coverage  # 100 % stmts / 92 % branch / 100 % funcs (escrow)
 ```
 
