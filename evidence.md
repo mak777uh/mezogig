@@ -30,7 +30,7 @@ Compact, copy-pasteable proof for judges. No claims beyond what is linked here.
 
 - Workflow: [`.github/workflows/test.yml`](.github/workflows/test.yml) — `npm ci` → `npx hardhat compile` →
   `npm test` → `npm run coverage` on every push/PR to `main`.
-- Latest run: **success** — https://github.com/mak777uh/mezogig/actions/runs/39945778835
+- Latest run: **success** — https://github.com/mak777uh/mezogig/actions/runs/39946220267
 - Status badge is on the first line of the README; Actions page:
   https://github.com/mak777uh/mezogig/actions/workflows/test.yml
 
@@ -70,3 +70,4 @@ npm test
 npm run agent -- verify --json
 node mcp/escrow-server.js   # speak JSON-RPC on stdin
 ```
+
